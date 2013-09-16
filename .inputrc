@@ -1,0 +1,30 @@
+set meta-flag on
+set input-meta on
+set output-meta on
+set convert-meta off
+
+set editing-mode vi
+set keymap vi
+
+
+# enable the use of punctuation when deleting text
+set bind-tty-special-chars off
+
+set show-all-if-ambiguous on
+set show-all-if-unmodified on
+
+# turn off the stupid bell
+set bell-style none
+
+
+$if mode=vi
+    set keymap vi-command
+    "gg": beginning-of-history
+    "G": end-of-history
+
+    set keymap vi-insert
+    "\C-w": backward-kill-word
+    "\C-p": history-search-backward
+$endif
+
+set completion-ignore-case on
