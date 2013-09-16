@@ -1,0 +1,58 @@
+[user]
+    name = Petro Verkhogliad
+    email = vpetro@gmail.com
+
+[color]
+    ui = auto
+
+[color "branch"]
+    current = yellow reverse
+    local = yellow
+    remote = green
+
+[color "diff"]
+    meta = yellow bold
+    frag = magenta bold
+    old = red bold
+    new = green bold
+    whitespace = red reverse
+
+[core]
+    whitespace=fix,-indent-with-non-tab,trailing-space,ct-at-eol
+
+[color "status"]
+    added = yellow
+    changed = green
+    untracked = cyan
+
+[alias]
+    pl = pull origin
+    ps = push origin
+    al = add --all
+    au = add -u
+    st = status -s -b
+    ci = commit -v
+    br = branch
+    co = checkout
+    df = diff
+    sl = log --format='%h %C(yellow) %cr %Cgreen %s %Cblue %ce'
+    l = log --graph --abbrev-commit --date=relative --decorate=no
+    lol = log --graph --decorate --abbrev-commit
+    lola = log --graph --decorate --abbrev-commit --all
+    ls = ls-files
+    ctags = !.git/hooks/ctags
+    branch-diff = !.git/hooks/branch-diff
+    cb = name-rev --name-only HEAD
+    subu = submodule update
+    unstage = reset HEAD --
+    pl = pull origin
+    ps = push origin
+
+
+[format]
+    pretty=format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset
+[init]
+    templatedir = ~/.git_template
+
+[difftool "vim"]
+    cmd = vim -d -f $LOCAL $REMOTE
