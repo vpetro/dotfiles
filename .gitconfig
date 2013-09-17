@@ -51,8 +51,12 @@
 
 [format]
     pretty=format:%C(yellow)%h%Creset -%C(red)%d%Creset %s %Cgreen(%ar) %C(bold blue)<%an>%Creset
+
 [init]
     templatedir = ~/.git_template
 
 [difftool "vim"]
     cmd = vim -d -f $LOCAL $REMOTE
+
+[push]
+    default = current
