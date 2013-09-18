@@ -131,7 +131,7 @@ nmap <leader>b :exe "vertical resize" (winwidth(0)*3/2)
 " reload all snipmate snippets
 nmap <leader>rr :call ReloadAllSnippets()<cr>
 " run rsync
-nmap \rr :execute ":!rsr pg"<cr>
+nmap <space>rr :execute ":!rsr pg"<cr>
 " }
 
 " insert mappings for all {
