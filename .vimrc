@@ -388,3 +388,6 @@ fu! CustomFoldText()
     return line . expansionString . foldSizeStr . foldPercentage . foldLevelStr
 endf
 " }
+
+" close the quickfix window if it it is the only remaining open window
+autocmd BufEnter * if (winnr('$') == 1 && &ft ==# 'qf') | q | en
