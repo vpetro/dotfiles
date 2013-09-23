@@ -1,0 +1,66 @@
+<?xml version="1.0"?>
+<root>
+<item>
+    <name>Shifts to Parentheses</name>
+    <appendix>Shifts, when pressed alone, type parentheses.  When used with other keys they're normal shifts.</appendix>
+
+    <identifier>private.shifts_to_parens</identifier>
+
+    <!-- This is the basic mapping. -->
+    <autogen>--KeyOverlaidModifier-- KeyCode::SHIFT_R, ModifierFlag::SHIFT_R | ModifierFlag::NONE, KeyCode::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L</autogen>
+    <autogen>--KeyOverlaidModifier-- KeyCode::SHIFT_L, ModifierFlag::SHIFT_L | ModifierFlag::NONE, KeyCode::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_R</autogen>
+
+    <!--
+        Remap the "rolls" of () and )( because it's too easy to hit one
+        before finishing the other, and there's no other reason to be
+        pressing both shift keys at once anyway
+    -->
+    <autogen>--KeyToKey-- KeyCode::SHIFT_L, ModifierFlag::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_L</autogen>
+    <autogen>--KeyToKey-- KeyCode::SHIFT_R, ModifierFlag::SHIFT_L, KeyCode::KEY_9, ModifierFlag::SHIFT_L, KeyCode::KEY_0, ModifierFlag::SHIFT_L</autogen>
+
+    <!--
+        Remap Rshift+Space to ') ', because when typing an end paren and
+        then a space I tend to hit space before I let go of rshift.
+    -->
+    <autogen>--KeyToKey-- KeyCode::SPACE, ModifierFlag::SHIFT_R, KeyCode::KEY_0, ModifierFlag::SHIFT_L, KeyCode::SPACE</autogen>
+</item>
+<item>
+    <name>HG to remove previous word</name>
+    <appendix></appendix>
+    <identifier>private.hg_to_remove_previous_word</identifier>
+    <autogen>
+      __SimultaneousKeyPresses__
+      KeyCode::H, KeyCode::G,
+      KeyCode::DELETE, ModifierFlag::OPTION_L
+    </autogen>
+</item>
+<item>
+    <name>FJ to Escape</name>
+    <appendix></appendix>
+    <identifier>private.fj_to_escape</identifier>
+    <autogen>
+      __SimultaneousKeyPresses__
+      KeyCode::F, KeyCode::J,
+      KeyCode::ESCAPE
+    </autogen>
+</item>
+<item>
+    <name>Modifier keys to brackets</name>
+    <appendix>Options, when pressed alone, type square brackets.</appendix>
+
+    <identifier>private.mod_keys_to_brackets</identifier>
+
+    <!-- This is the basic mapping. -->
+    <autogen>--KeyOverlaidModifier-- KeyCode::OPTION_R, ModifierFlag::OPTION_R | ModifierFlag::NONE, KeyCode::BRACKET_LEFT</autogen>
+    <autogen>--KeyOverlaidModifier-- KeyCode::OPTION_L, ModifierFlag::OPTION_L | ModifierFlag::NONE, KeyCode::BRACKET_RIGHT</autogen>
+
+    <!--
+        Remap the "rolls" of () and )( because it's too easy to hit one
+        before finishing the other, and there's no other reason to be
+        pressing both shift keys at once anyway
+    -->
+    <!--<autogen>--KeyToKey-- KeyCode::OPTION_L, ModifierFlag::OPTION_R, KeyCode::KEY_0, ModifierFlag::OPTION_L, KeyCode::KEY_9, ModifierFlag::OPTION_L</autogen>-->
+    <!--<autogen>--KeyToKey-- KeyCode::OPTION_R, ModifierFlag::OPTION_L, KeyCode::KEY_9, ModifierFlag::OPTION_L, KeyCode::KEY_0, ModifierFlag::OPTION_L</autogen>-->
+
+</item>
+</root>
