@@ -49,9 +49,10 @@ nmap g# g#zz
 " searching with TheSilverSearcher and Ag.vim
 command -nargs=1 AgPythonFiles :Ag! "<args>" **/*.py
 command -nargs=1 AgConfFiles :Ag! "<args>" **/*.conf
+command -nargs=1 AgJsonFiles :Ag! "<args>" **/*.json
 
 nmap <leader>ap :AgPythonFiles <cword><cr>
-nmap <leader>aa :Ag! 
+nmap <leader>aa :Ag!
 " }
 
 " misc {
@@ -86,7 +87,8 @@ set autoread
 au FocusLost * :wa
 
 " set the the dir where to store the swap files.
-set dir=/Users/petrov/.tmp
+set noswapfile
+"set dir=/Users/petrov/.tmp
 
 " set encoding
 set enc=utf-8
