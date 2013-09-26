@@ -87,7 +87,7 @@ set autoread
 au FocusLost * :wa
 
 " set the the dir where to store the swap files.
-set noswapfile
+set noswapfile nowritebackup nobackup
 "set dir=/Users/petrov/.tmp
 
 " set encoding
