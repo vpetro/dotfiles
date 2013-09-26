@@ -234,6 +234,11 @@ augroup clojure
 augroup END
 " }
 
+augroup json
+    au!
+    au BufRead,BufNewFile *.json set ft=javascript
+augroup END
+
 " latex {
 augroup ft_tex
     " format paragraph quickly
@@ -393,3 +398,18 @@ endf
 
 " close the quickfix window if it it is the only remaining open window
 autocmd BufEnter * if (winnr('$') == 1 && &ft ==# 'qf') | q | en
+
+" convert json date to python datetime
+function! ConvertJsonDate()
+python << EOF
+def _convert_json_date():
+    import vim
+    from datetime import datetime
+    json_date = int(vim.eval("expand(\"<cword>\")"))
+    return datetime.fromtimestamp(json_date / 1000.0)
+print _convert_json_date()
+EOF
+endfunction
+
+nmap \fd :call ConvertJsonDate()<cr>
+nmap \v :source ~/.vimrc<cr>
