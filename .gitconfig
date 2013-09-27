@@ -42,7 +42,7 @@
     ls = ls-files
     ctags = !.git/hooks/ctags
     branch-diff = !.git/hooks/branch-diff
-    cb = name-rev --name-only HEAD
+    current-branch = name-rev --name-only HEAD
     subu = submodule update
     unstage = reset HEAD --
     pl = pull origin
