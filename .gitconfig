@@ -47,6 +47,7 @@
     unstage = reset HEAD --
     pl = pull origin
     ps = push origin
+    conflicted-files = diff --name-only --diff-filter=U
 
 
 [format]
