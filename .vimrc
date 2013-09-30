@@ -193,6 +193,7 @@ let g:ctrlp_dotfiles = 0
 let g:ctrlp_extensions = ['line']
 
 map <leader>t :CtrlP<cr>
+map <leader>l :CtrlPLine %<cr>
 map <space>t :CtrlPTag<cr>
 nmap <space>ct :CtrlPTag<cr><C-\>r/
 
