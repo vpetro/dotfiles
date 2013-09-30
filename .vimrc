@@ -190,7 +190,7 @@ let g:ctrlp_match_window_reversed = 0
 let g:ctrlp_max_height = 10
 let g:ctrlp_working_path_mode = 0
 let g:ctrlp_dotfiles = 0
-"let g:ctrlp_extensions = ['tag']
+let g:ctrlp_extensions = ['line']
 
 map <leader>t :CtrlP<cr>
 map <space>t :CtrlPTag<cr>
