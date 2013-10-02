@@ -47,9 +47,9 @@ nmap g* g*zz
 nmap g# g#zz
 
 " searching with TheSilverSearcher and Ag.vim
-command -nargs=1 AgPythonFiles :Ag! "<args>" **/*.py
-command -nargs=1 AgConfFiles :Ag! "<args>" **/*.conf
-command -nargs=1 AgJsonFiles :Ag! "<args>" **/*.json
+command! -nargs=1 AgPythonFiles :Ag! "<args>" **/*.py
+command! -nargs=1 AgConfFiles :Ag! "<args>" **/*.conf
+command! -nargs=1 AgJsonFiles :Ag! "<args>" **/*.json
 
 nmap <leader>ap :AgPythonFiles <cword><cr>
 nmap <leader>aa :Ag!
@@ -193,6 +193,7 @@ let g:ctrlp_dotfiles = 0
 let g:ctrlp_extensions = ['line']
 
 map <leader>t :CtrlP<cr>
+map <leader>l :CtrlPLine %<cr>
 map <space>t :CtrlPTag<cr>
 nmap <space>ct :CtrlPTag<cr><C-\>r/
 
