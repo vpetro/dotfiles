@@ -48,6 +48,8 @@
     pl = pull origin
     ps = push origin
     conflicted-files = diff --name-only --diff-filter=U
+    unstage = reset HEAD
+    uncommit = reset --soft HEAD^
 
 
 [format]
