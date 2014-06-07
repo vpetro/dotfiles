@@ -50,6 +50,8 @@
     conflicted-files = diff --name-only --diff-filter=U
     unstage = reset HEAD
     uncommit = reset --soft HEAD^
+    conflicted-files = diff --name-only --diff-filter=U
+    br = for-each-ref --sort='committerdate' --format="%(refname:short)" refs/heads/
 
 
 [format]
