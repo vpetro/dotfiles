@@ -13,7 +13,6 @@ set t_Co=256
 set nocompatible
 set hidden
 set nolazyredraw
-set ttyfast
 " }
 
 " indenting {
@@ -53,9 +52,21 @@ nmap g# g#zz
 nnoremap <C-j> <C-w>j
 nnoremap <C-k> <C-w>k
 nnoremap <C-h> <C-w>h
+" nnoremap <BS>  <C-w>h
 nnoremap <C-l> <C-w>l
+" move from the neovim terminal window to somewhere else
+tnoremap <C-h> <C-\><C-n><C-w>h
+tnoremap <C-j> <C-\><C-n><C-w>j
+tnoremap <C-k> <C-\><C-n><C-w>k
+tnoremap <C-l> <C-\><C-n><C-w>l
 
-autocmd VimResized * :wincmd =
+nmap <leader>f :ToggleTerminalBuffer<cr>
+tnoremap <leader>f <c-\><c-n>:ToggleTerminalBuffer<cr>
+
+nnoremap <leader>o :call ToggleMaximixed()<cr>
+
+" equalize the windows when vim is resized
+" autocmd VimResized * :wincmd =
 " }
 
 " misc {
@@ -76,6 +87,7 @@ set wildignore+=*.dll,*.exe
 set wildignore+=*.o,*.obj,*.class,*.pyc,*.log,*.pidb,*.jar,*.class
 set wildignore+=*.aux,*.bbl,*.blg,*.fdb_latexmk,*.bst,*.pdf,*.png,*.jpg,*.gif
 set wildignore+=*.json,*.bson
+set wildignore+=*.jar
 
 if has("eval")
     runtime! macros/matchit.vim
@@ -109,20 +121,20 @@ set noerrorbells
 set novisualbell
 set visualbell t_vb=
 set laststatus=2
-set statusline=%<%f\ %h%w%m%r%y%=L:%l/%L\ G:%{fugitive#statusline()}
+set statusline=%<%f\ %h%w%m%r%y%=B:%n\ L:%l/%L\ G:%{fugitive#statusline()}
 " }
 
 " set up leaders {
-let mapleader = ","
-let g:mapleader = ","
-let localleader = " "
-let maplocalleader = " "
+let mapleader = "\<Space>"
+let g:mapleader = "\<Space>"
+" let localleader = " "
+" let maplocalleader = " "
 " }
 
 " set colorscheme and colorcolumn {
 set background=dark
 set colorcolumn=79
-colorscheme distinguished
+colorscheme petro2
 " }
 
 " normal mode mappings for all {
@@ -133,17 +145,22 @@ noremap W :w<cr>
 " faster quiting and saving
 nmap <leader>q :q!<cr>
 nmap <leader>w :w!<cr>
-nmap <leader>f :find<cr>
+
+nmap <leader>ev :vsplit ~/.vimrc<cr>
+nmap <leader>sv :source ~/.vimrc<cr>
 
 " Pull word under cursor into LHS of a substitute
 nmap <leader>z :%s#\<<c-r>=expand("<cword>")<cr>\>#
 " run rsync
-nmap <space>rr :execute ":!rsr pg"<cr>
+" nmap <space>rr :execute ":!rsr pg"<cr>
 " }
 
 " insert mappings for all {
 ino jj <esc>
 cno jj <C-c>
+" nmap <space><space> <esc>
+" vmap <space><space> <esc>
+" imap <space><space> <esc>
 " }
 
 " quickfix {
@@ -165,4 +182,91 @@ source ~/.vim/init/ag.vim
 source ~/.vim/init/tagbar.vim
 source ~/.vim/init/nerdcommenter.vim
 source ~/.vim/init/fugitive.vim
+source ~/.vim/init/tslime.vim
+source ~/.vim/init/ultisnips.vim
 " }
+"
+
+" quick access to dumped pane text
+nmap <leader>ep :vsplit ~/.tmux/pane.out<cr>
+
+let g:rainbow_active = 1
+
+set timeoutlen=500
+
+call textobj#user#plugin('line', {
+\   '-': {
+\     'select-a-function': 'CurrentLineA',
+\     'select-a': 'al',
+\     'select-i-function': 'CurrentLineI',
+\     'select-i': 'il',
+\   },
+\ })
+
+function! ToggleMaximixed()
+  if !exists('g:window_maximized') || g:window_maximized == 0
+      echom 'maximizing'
+      let g:window_maximized = 1
+      :resize | vertical resize
+      return
+  endif
+
+  if exists('g:window_maximized') && g:window_maximized == 1
+      echom 'equalizing windows'
+      let g:window_maximized = 0
+      :wincmd =
+      return
+  endif
+
+endfunction
+
+function! CurrentLineA()
+  normal! 0
+  let head_pos = getpos('.')
+  normal! $
+  let tail_pos = getpos('.')
+  return ['v', head_pos, tail_pos]
+endfunction
+
+function! CurrentLineI()
+  normal! ^
+  let head_pos = getpos('.')
+  normal! g_
+  let tail_pos = getpos('.')
+  let non_blank_char_exists_p = getline('.')[head_pos[2] - 1] !~# '\s'
+  return
+  \ non_blank_char_exists_p
+  \ ? ['v', head_pos, tail_pos]
+  \ : 0
+endfunction
+
+
+aug neoterm_setup
+  au TermOpen * let g:neoterm_current_id = b:terminal_job_id
+  au TermOpen * setlocal nonumber norelativenumber
+  au BufUnload term://*
+        \ if exists('g:neoterm_current_id') |
+        \   unlet g:neoterm_current_id |
+        \ endif
+aug END
+
+" open an existing buffer
+function! OpenExisingTerminal()
+  let all_buffers = range(1, bufnr('$'))
+  let g:term_buffers = filter(all_buffers, 'bufname(v:val) =~ "term:\/\/.*"')
+  exec("botright sb " . g:term_buffers[0])
+endfunction
+
+function! ToggleTerminalBuffer()
+  let all_buffers = range(1, bufnr('$'))
+  let g:term_buffers = filter(all_buffers, 'bufname(v:val) =~ "term:\/\/.*"')
+
+  let visible_map = {}
+  for bn in tabpagebuflist()
+      let visible_map[bn] = bn
+  endfor
+endfunction
+
+" Color name (:help cterm-colors) or ANSI code
+let g:limelight_conceal_ctermfg = 'gray'
+let g:limelight_conceal_ctermfg = 240
