@@ -6,7 +6,7 @@ local hyper = {"cmd", "alt"}
 hs.hints.showTitleThresh = 0
 hs.window.animationDuration = 0
 hs.grid.setMargins{0, 0}
-hs.grid.setGrid{100, 100}
+hs.grid.setGrid('100x100')
 
 local gridset = function(x, y, w, h)
     return function()
