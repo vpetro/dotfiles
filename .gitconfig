@@ -1,6 +1,7 @@
 [user]
     name = Petro Verkhogliad
-    email = vpetro@gmail.com
+    email =
+    signingkey =
 
 [color]
     ui = auto
@@ -19,11 +20,13 @@
 
 [core]
     whitespace=fix,-indent-with-non-tab,trailing-space,ct-at-eol
+    excludesfile = ~/.gitignore_global
 
 [color "status"]
     added = yellow
     changed = green
     untracked = cyan
+    relativePaths = false
 
 [alias]
     pl = pull origin
@@ -35,6 +38,7 @@
     br = branch
     co = checkout
     df = diff
+    lc = log ORIG_HEAD.. --stat --no-merges
     sl = log --format='%h %C(yellow) %cr %Cgreen %s %Cblue %ce'
     l = log --graph --abbrev-commit --date=relative --decorate=no
     lol = log --graph --decorate --abbrev-commit
@@ -42,7 +46,7 @@
     ls = ls-files
     ctags = !.git/hooks/ctags
     branch-diff = !.git/hooks/branch-diff
-    current-branch = name-rev --name-only HEAD
+    current-branch = rev-parse --abbrev-ref HEAD
     subu = submodule update
     unstage = reset HEAD --
     pl = pull origin
@@ -52,6 +56,7 @@
     uncommit = reset --soft HEAD^
     conflicted-files = diff --name-only --diff-filter=U
     br = for-each-ref --sort='committerdate' --format="%(refname:short)" refs/heads/
+    graphviz = "!f() { echo 'digraph git {' ; git log --pretty='format:  %h -> { %p }' \"$@\" | sed 's/[0-9a-f][0-9a-f]*/\"&\"/g' ; echo '}'; }; f"
 
 
 [format]
@@ -59,9 +64,8 @@
 
 [init]
     templatedir = ~/.git_template
+	defaultBranch = main
 
-[difftool "vim"]
-    cmd = vim -d -f $LOCAL $REMOTE
 
 [push]
     default = current
@@ -71,3 +75,9 @@
 
 [gc]
     auto = 1
+
+[diff]
+    tool = vimdiff
+
+[pager]
+    diff = 
