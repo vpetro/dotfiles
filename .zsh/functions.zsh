@@ -15,6 +15,10 @@ ydl() {
     youtube-dl "$1" && terminal-notifier -title 'youtube-dl' -message 'Download complete.'
 }
 
+ydl_files() {
+    while read in; do youtube-dl --extract-audio --audio-format "mp3" --audio-quality 0 "$in"; done < $1
+}
+
 fco() {
   local tags branches target
   tags=$(
@@ -46,4 +50,15 @@ fs() {
 
 use() {
     eval "$(docker-machine env $1)"
+}
+
+
+gcop() {
+    local $pr_number
+    local $branch_name
+    pr_number=$(echo $1 | sed 's/[^0-9]*//g')
+    branch_name="pr${pr_number}"
+
+    git fetch origin pull/${pr_number}/head:${branch_name}
+    git checkout ${branch_name}
 }
