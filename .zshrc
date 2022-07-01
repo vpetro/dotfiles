@@ -28,8 +28,11 @@ unset t0
 
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+alias luamake=/Users/petrov/oss/lua-language-server/3rd/luamake/luamake
+
+eval $(/opt/homebrew/bin/brew shellenv)
+
 #THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
 export SDKMAN_DIR="$HOME/.sdkman"
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
-alias luamake=/Users/petrov/oss/lua-language-server/3rd/luamake/luamake
