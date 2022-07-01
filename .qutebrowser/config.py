@@ -5,18 +5,18 @@ import os
 os.environ["PATH"] += ":/usr/local/bin"
 
 
-c.fonts.completion.entry = "11px Hack"
-c.fonts.completion.category = "11px Hack"
-c.fonts.debug_console = "11px Hack"
-c.fonts.downloads = "11px Hack"
-c.fonts.hints = "11px Hack"
-c.fonts.keyhint = "11px Hack"
-c.fonts.messages.info = "11px Hack"
-c.fonts.messages.error = "11px Hack"
-c.fonts.prompts = "11px Hack"
-c.fonts.statusbar = "11px Hack"
-c.fonts.tabs.selected = '12px Hack'
-c.fonts.tabs.unselected = '11px Hack'
+c.fonts.completion.entry = "Bold 12px VictorMono Nerd Font"
+c.fonts.completion.category = "Bold 12px VictorMono Nerd Font"
+c.fonts.debug_console = "Bold 12px VictorMono Nerd Font"
+c.fonts.downloads = "Bold 12px VictorMono Nerd Font"
+c.fonts.hints = "Bold 12px VictorMono Nerd Font"
+c.fonts.keyhint = "Bold 12px VictorMono Nerd Font"
+c.fonts.messages.info = "Bold 12px VictorMono Nerd Font"
+c.fonts.messages.error = "Bold 12px VictorMono Nerd Font"
+c.fonts.prompts = "Bold 12px VictorMono Nerd Font"
+c.fonts.statusbar = "Bold 12px VictorMono Nerd Font"
+c.fonts.tabs.selected = "Bold 13px VictorMono Nerd Font"
+c.fonts.tabs.unselected = "Bold 13px VictorMono Nerd Font"
 
 c.tabs.position = "left"
 
@@ -106,14 +106,13 @@ c.url.searchengines = {
 config.bind(',', 'enter-mode passthrough', mode='normal')
 config.bind('<Escape>', 'leave-mode', mode='passthrough')
 
-config.bind("xx", "jseval --quiet --file /Users/petrov/.qutebrowser/data/js/no-floating.js")
+config.bind("xx", "jseval --quiet --file ~/.qutebrowser/data/js/no-floating.js")
 
 config.set('content.blocking.method', 'both')
 config.set(
     'content.blocking.hosts.lists',
     [
         'https://raw.githubusercontent.com/StevenBlack/hosts/master/hosts',
-        '/Users/petrov/.config/qutebrowser/blocked-hosts'
     ]
 )
 
