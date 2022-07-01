@@ -1,3 +1,8 @@
 .DS_Store
 .zsh/cache/*
 ./zsh/shared_proto_db
+.config/.nvim
+.config/nvim
+.qutebrowser/bookmarks
+.qutebrowser/quickmarks
+.config/gcloud
