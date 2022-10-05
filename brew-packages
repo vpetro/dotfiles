@@ -51,3 +51,6 @@ alfred
 pandoc
 task
 awscli
+lua-language-server
+ghcup
+node
