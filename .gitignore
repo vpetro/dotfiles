@@ -6,3 +6,5 @@
 .qutebrowser/bookmarks
 .qutebrowser/quickmarks
 .config/gcloud
+.ipython/profile_default
+.ipython/profile_petro/history.sqlite
