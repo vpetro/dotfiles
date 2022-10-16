@@ -1,0 +1,34 @@
+#!/Users/petrov/.pyenv/versions/3.10.4/bin/python
+
+import os
+from urllib.parse import urlparse
+from subprocess import Popen, PIPE, run
+
+
+def parse():
+    page_url = os.environ["QUTE_URL"]
+    path = urlparse(page_url).path
+    return path
+
+
+def create_clone_url(url_path):
+    return f"git@github.com:{url_path}.git"
+
+
+def store_in_clipboard(content):
+    p1 = Popen(["echo", "-n", f"'{content}'"], stdout=PIPE)
+    run(['pbcopy'], stdin=p1.stdout)
+    return git_clone_url
+
+
+def write_to_browser(message):
+    fifo = os.environ["QUTE_FIFO"]
+    with open(fifo, 'w') as fh:
+        fh.write(f"message-info '{message}'\n")
+
+
+if __name__ == "__main__":
+    url_path = parse()
+    git_clone_url = create_clone_url(url_path)
+    store_in_clipboard(git_clone_url)
+    write_to_browser(f"Copied project name: {git_clone_url} into clipboard!")
