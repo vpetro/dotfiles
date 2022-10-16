@@ -5,9 +5,11 @@ c = get_config()
 
 c.TerminalIPythonApp.profile = u'sh'
 c.TerminalIPythonApp.display_banner = False
-c.TerminalInteractiveShell.editor = 'vim'
+c.TerminalInteractiveShell.editor = u'vim'
+c.TerminalInteractiveShell.editing_mode = u'vi'
 c.TerminalInteractiveShell.term_title = True
 c.TerminalInteractiveShell.cache_size = 1000
+c.TerminalInteractiveShell.confirm_exit = False
 c.TerminalInteractiveShell.pdb = True
 
 c.TerminalIPythonApp.exec_files = [
