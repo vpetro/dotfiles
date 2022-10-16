@@ -22,8 +22,8 @@ alias gu='git pull origin `git current-branch`'
 alias gm="git merge"
 
 # python
-alias ipy="ipython --no-confirm-exit --profile=petro"
-alias python="/usr/local/bin/python3"
+#alias ipy="ipython --no-confirm-exit --profile=petro"
+#alias python="/usr/local/bin/python3"
 
 # scala
 alias scala-desugar="scala -Xprint:typer"

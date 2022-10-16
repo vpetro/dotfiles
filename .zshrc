@@ -32,7 +32,8 @@ alias luamake=/Users/petrov/oss/lua-language-server/3rd/luamake/luamake
 
 eval $(/opt/homebrew/bin/brew shellenv)
 
-#THIS MUST BE AT THE END OF THE FILE FOR SDKMAN TO WORK!!!
-export SDKMAN_DIR="$HOME/.sdkman"
+# python version management, just like sdkman
+eval "$(pyenv init -)"
+
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
