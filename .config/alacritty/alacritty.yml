@@ -3,17 +3,24 @@ env:
 
 font:
   normal:
-    # family: "Monaco"
-    family: "VictorMono Nerd Font Mono"
-    style: SemiBold
+    family: "Monaco"
   bold:
-    family: "VictorMono Nerd Font Mono"
-    style: SemiBold
+    family: "Monaco"
   italic:
-    family: "VictorMono Nerd Font Mono"
-    style: SemiBold
+    family: "Monaco"
+  size: 13.0
 
-  size: 12.0
+# font:
+#   normal:
+#     family: "VictorMono Nerd Font Mono"
+#     style: SemiBold
+#   bold:
+#     family: "VictorMono Nerd Font Mono"
+#     style: SemiBold
+#   italic:
+#     family: "VictorMono Nerd Font Mono"
+#     style: SemiBold
+#   size: 15.0
 
   offset:
     x: 0
