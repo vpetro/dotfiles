@@ -35,5 +35,6 @@ eval $(/opt/homebrew/bin/brew shellenv)
 # python version management, just like sdkman
 eval "$(pyenv init -)"
 
+# load sdkman to manage jdk versions/tools
 [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
