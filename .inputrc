@@ -3,10 +3,6 @@ set input-meta on
 set output-meta on
 set convert-meta off
 
-set editing-mode vi
-set keymap vi
-
-
 # enable the use of punctuation when deleting text
 set bind-tty-special-chars off
 
