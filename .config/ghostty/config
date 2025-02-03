@@ -1,0 +1,45 @@
+background = 000000
+# font-family = "Monaco"
+font-family = "ComicCode Nerd Font"
+
+# font-family = "Essential PragmataPro"
+# font-family = "ComicCodeLigatures Nerd Font"
+# font-family = "Victor Mono"
+font-size = 12
+
+theme = "Tomorrow Night Bright"
+
+window-decoration = false
+
+font-thicken = true
+# adjust-font-baseline = 0
+adjust-cell-height = 0
+
+keybind = cmd+shift+r=reload_config
+
+# tmux keybinds
+keybind = cmd+[=text:\x02p
+keybind = cmd+]=text:\x02n
+keybind = cmd+t=text:\x02\x0a
+keybind = cmd+j=text:\x02j
+keybind = cmd+k=text:\x02k
+keybind = cmd+s=text:\x02-
+keybind = cmd+d=text:\x02\\
+keybind = cmd+o=text:\x02c
+keybind = cmd+shift+h=text:\x02H
+keybind = cmd+shift+j=text:\x02J
+keybind = cmd+shift+k=text:\x02K
+keybind = cmd+shift+l=text:\x02L
+keybind = cmd+m=text:\x02u
+
+# tmux pane movement
+keybind = cmd+1=text:\x021
+keybind = cmd+2=text:\x022
+keybind = cmd+3=text:\x023
+keybind = cmd+4=text:\x024
+keybind = cmd+5=text:\x025
+keybind = cmd+6=text:\x026
+keybind = cmd+7=text:\x027
+keybind = cmd+8=text:\x028
+keybind = cmd+9=text:\x029
+
