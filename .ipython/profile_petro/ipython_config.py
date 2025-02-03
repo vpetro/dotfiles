@@ -10,7 +10,9 @@ c.TerminalInteractiveShell.editing_mode = u'vi'
 c.TerminalInteractiveShell.term_title = True
 c.TerminalInteractiveShell.cache_size = 1000
 c.TerminalInteractiveShell.confirm_exit = False
-c.TerminalInteractiveShell.pdb = True
+c.TerminalInteractiveShell.pdb = False
+
+c.InteractiveShell.colors = 'NoColor'
 
 c.TerminalIPythonApp.exec_files = [
     os.path.join(
