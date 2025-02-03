@@ -1,0 +1,14 @@
+[font.bold]
+family = "ComicCodeLigatures Nerd Font Medium"
+style = "Medium"
+
+[font.italic]
+family = "ComicCodeLigatures Nerd Font Medium"
+style = "Medium"
+
+[font.normal]
+family = "ComicCodeLigatures Nerd Font Medium"
+style = "Medium"
+
+[font]
+size = 13.0

@@ -1,0 +1,14 @@
+[font.bold]
+family = "Comic Code"
+style = "Medium"
+
+[font.italic]
+family = "Comic Code"
+style = "Medium"
+
+[font.normal]
+family = "Comic Code"
+style = "Medium"
+
+[font]
+size = 13.0

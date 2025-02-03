@@ -1,0 +1,14 @@
+[font.bold]
+family = "Essential PragmataPro"
+style = "Regular"
+
+[font.italic]
+family = "Essential PragmataPro"
+style = "Regular"
+
+[font.normal]
+family = "Essential PragmataPro"
+style = "Regular"
+
+[font]
+size = 40.0
