@@ -23,5 +23,6 @@ function git_status {
     fi
     echo $prompt
 }
-export PROMPT='%F{130}$(current_dir_path)%{$reset_color%} $(git_status)%{$reset_color%} %{$fg[yellow]%}λ%{$reset_color%}%{%F{250}%}%{$reset_color%} '
+
+export PROMPT='${VIRTUAL_ENV_PROMPT:+($VIRTUAL_ENV_PROMPT) }%F{130}$(current_dir_path)%{$reset_color%} $(git_status)%{$reset_color%} %{$fg[yellow]%}λ%{$reset_color%}%{%F{250}%}%{$reset_color%} '
 

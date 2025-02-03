@@ -1,16 +1,21 @@
 # basic
 
+alias ls="ls -G"
+
 # shorter commands
 alias -g G="| egrep -i"
 alias -g L="| less"
 alias -g H="| head"
 alias -g T="| tail"
 
+alias -g FC="$(docker ps --format '{{.Names}}')"
+
 # git
 alias gc="git commit -v -S"
 alias gp="git push"
 alias gs="git st"
 alias gd="git diff"
+alias gdc="git diff --cached"
 alias gau="git au"
 alias gsl="git sl"
 alias gsh="git stash"
@@ -22,7 +27,7 @@ alias gu='git pull origin `git current-branch`'
 alias gm="git merge"
 
 # python
-#alias ipy="ipython --no-confirm-exit --profile=petro"
+alias ipy="ipython --no-confirm-exit --profile=petro"
 #alias python="/usr/local/bin/python3"
 
 # scala
@@ -34,7 +39,11 @@ alias cp=cp
 alias v='nvim'
 
 # vlc
-alias radio='mpv https://somafm.com/defcon.pls'
+alias radio='mpv --volume=90 --mute=no https://somafm.com/defcon.pls'
+#alias radio2="mpv --volume=90 --mute=no 'https://www.yutube.com/watch?v=cXzYWEFib4M'"
+alias radio2="mpv --volume=90 --mute=no --no-video 'https://www.youtube.com/watch?v=jfKfPfyJRdk'"
+# good for playing something from youtube
+alias listen='mpv --no-video --volume=90 --mute=no'
 
 # docker
 alias dk="docker"
@@ -63,3 +72,9 @@ alias tmc="tmux new-session -s"
 alias tm="tmux"
 
 alias ge="sh gradlew"
+
+alias kb="kubectl"
+
+alias pe="poetry"
+
+alias gcl="gcloud"

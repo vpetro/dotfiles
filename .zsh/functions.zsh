@@ -62,3 +62,86 @@ gcop() {
     git fetch origin pull/${pr_number}/head:${branch_name}
     git checkout ${branch_name}
 }
+
+ob() {
+
+  result=$(buku -p -f 40 | fzf | cut -f1)
+  open -a /Applications/qutebrowser.app "$result"
+
+}
+
+__docker_pre_test() {
+  if [[ -z "$1" ]] && [[ $(docker ps --format '{{.Names}}') ]]; then
+    return 0;
+  fi
+
+  if [[ ! -z "$1" ]] && [[ $(docker ps -a --format '{{.Names}}') ]]; then
+    return 0;
+  fi
+
+  echo "No containers found";
+  return 1;
+}
+
+#docker stop
+ds() {
+  __docker_pre_test \
+    && docker ps --format '{{.Names}}' \
+      | fzf -m  \
+      | while read -r name; do
+          docker update --restart=no $name
+          docker stop $name
+        done
+}
+
+#docker stop all
+dsa() {
+  __docker_pre_test
+  if [ $? -eq 0 ]; then
+    docker update --restart=no $(docker ps -q)
+    docker stop $(docker ps -q)
+  fi
+}
+
+pyright_config() {
+  jq \
+    --null-input \
+    --arg venv "$(basename $(poetry env info -p))" \
+    --arg venvPath "$(dirname $(poetry env info -p))" \
+    '{ "venv": $venv, "venvPath": $venvPath }' \
+    > pyrightconfig.json
+  }
+
+run_on_save() {
+  # use it like this: run_on_save dir_name pytest something
+  fswatch -0 -o -r --event=Created $1 |  xargs -0 -n1 -I{} ${@:2}
+}
+
+log_interactive_command() {
+  local logfile="chat_log_$(date +"%Y%m%d_%H%M%S").log"
+
+    # Create a pseudo-terminal
+    zpty start_command "$1"
+
+    # Capture output while preserving interactivity
+    zpty -r start_command > >(tee "$logfile")
+
+    # Wait for the command to finish
+    zpty -w start_command $'\004'  # Send EOF
+    zpty -d start_command
+  }
+
+l() {
+  interaction_mode="chat"
+  model_name="claude-3.5-sonnet"
+
+  logfile=~/.llm/$(date +"%Y-%m-%d").log
+
+  if [[ ! -e $logfile ]]; then
+    touch $logfile
+  fi
+
+  # llm chat -m claude-3.5-sonnet 2>&1 | tee $logfile
+  script $logfile llm $interaction_mode -m $model_name
+}
+

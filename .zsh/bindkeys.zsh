@@ -10,4 +10,7 @@ bindkey "^F" forward-char
 bindkey "^B" backward-char
 bindkey "^T" forward-word
 bindkey "^V" backward-word
-bindkey "^R" history-incremental-search-backward
+
+autoload -U select-word-style
+select-word-style bash
+# bindkey "^R" history-incremental-search-backward
