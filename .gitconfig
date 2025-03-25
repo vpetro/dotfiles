@@ -1,7 +1,7 @@
 [user]
     name = Petro Verkhogliad
-    email =
-    signingkey =
+    email = vpetro@gmail.com
+    signingkey = AC9C9A77
 
 [color]
     ui = auto
@@ -51,7 +51,6 @@
     unstage = reset HEAD --
     pl = pull origin
     ps = push origin
-    conflicted-files = diff --name-only --diff-filter=U
     unstage = reset HEAD
     uncommit = reset --soft HEAD^
     conflicted-files = diff --name-only --diff-filter=U
@@ -64,14 +63,11 @@
 
 [init]
     templatedir = ~/.git_template
-	defaultBranch = main
+    defaultBranch = main
 
 
 [push]
     default = current
-
-[merge]
-    summary = true
 
 [gc]
     auto = 1
@@ -81,3 +77,19 @@
 
 [pager]
     diff = 
+
+[commit]
+    gpgsign = true
+    verbose = true
+
+[merge]
+  summary = true
+  tool = "nvim"
+
+[mergetool]
+  keepBackup = false
+  prompt = false
+
+[mergetool "nvim"]
+  cmd = "nvim -d -c \"wincmd l\" -c \"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
+

@@ -1,0 +1,14 @@
+[font.bold]
+family = "JetBrainsMono Nerd Font"
+style = "Light"
+
+[font.italic]
+family = "JetBrainsMono Nerd Font"
+style = "Light"
+
+[font.normal]
+family = "JetBrainsMono Nerd Font"
+style = "Light"
+
+[font]
+size = 14.0

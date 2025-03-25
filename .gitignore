@@ -8,3 +8,4 @@
 .config/gcloud
 .ipython/profile_default
 .ipython/profile_petro/history.sqlite
+pyrightconfig.json
