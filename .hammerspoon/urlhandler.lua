@@ -1,5 +1,5 @@
-
-local defaultBrowser = "org.qt-project.Qt.QtWebEngineCore"
+-- local defaultBrowser = "/opt/homebrew/bin/qutebrowser"
+local defaultBrowser = "/Applications/LibreWolf.app"
 local workBrowser = "/Applications/LibreWolf.app"
 local videoPlayer = "/Applications/mpv.app"
 
@@ -36,11 +36,13 @@ function M.handler(scheme, host, param, url)
   elseif string.find(host, "shortcut.com") then
     hs.execute('open -a ' .. workBrowser .. ' ' .. qurl)
   elseif string.find(host, "twitch.tv") then
-    hs.execute('open -a ' .. videoPlayer .. ' ' .. qurl)
+    hs.execute('open -n -a ' .. videoPlayer .. ' ' .. qurl)
   elseif string.find(host, "youtube.com") then
-    hs.execute('open -a ' .. videoPlayer .. ' ' .. qurl)
+    hs.execute('open -n -a ' .. videoPlayer .. ' \'' .. qurl .. '\'')
   else
+    log.i("opening with default browser: " .. qurl)
     hs.urlevent.openURLWithBundle(url, defaultBrowser)
+    hs.execute('open -a ' .. defaultBrowser .. ' --args --target tab ' .. qurl)
   end
 end
 

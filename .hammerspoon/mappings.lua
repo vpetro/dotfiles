@@ -40,8 +40,8 @@ local function setup()
 
   -- moving applications
   hs.hotkey.bind(kb.hyper, "r", function() hs.reload() end)
-  hs.hotkey.bind(kb.hyper, "i", function() hs.application.launchOrFocus("LibreWolf") end)
-  hs.hotkey.bind(kb.hyper, "k", function() hs.application.launchOrFocus("qutebrowser") end)
+  hs.hotkey.bind(kb.hyper, "k", function() hs.application.launchOrFocus("LibreWolf") end)
+  -- hs.hotkey.bind(kb.hyper, "i", function() hs.application.launchOrFocus("qutebrowser") end)
   hs.hotkey.bind(kb.hyper, "j", function() hs.application.launchOrFocus("Alacritty") end)
   hs.hotkey.bind(kb.hyper, "l", function() hs.application.launchOrFocus("Slack") end)
   hs.hotkey.bind(kb.hyper, "p", function() hs.application.launchOrFocus("Skim") end)
