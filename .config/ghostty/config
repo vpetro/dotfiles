@@ -1,11 +1,11 @@
 background = 000000
 # font-family = "Monaco"
-font-family = "ComicCode Nerd Font"
+# font-family = "ComicCode Nerd Font"
 
-# font-family = "Essential PragmataPro"
+font-family = "Essential PragmataPro"
 # font-family = "ComicCodeLigatures Nerd Font"
 # font-family = "Victor Mono"
-font-size = 12
+font-size = 14
 
 theme = "Tomorrow Night Bright"
 
