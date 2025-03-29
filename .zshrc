@@ -50,7 +50,7 @@ eval $(/opt/homebrew/bin/brew shellenv)
 eval "$(pyenv init -)"
 
 # load sdkman to manage jdk versions/tools
-# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # load nvm to manage nodejs versions
 # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
