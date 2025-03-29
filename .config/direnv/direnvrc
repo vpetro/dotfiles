@@ -42,7 +42,8 @@ layout_uv() {
 
 use_envlocal() {
   [[ -f .env.local ]] || return 0
-  echo "" # direnv_load op run --env-file .env.local --no-masking direnv dump
+  # echo "" # direnv_load op run --env-file .env.local --no-masking direnv dump
+  direnv_load dotenv .env.local
 }
 
 watch_file .env.local
