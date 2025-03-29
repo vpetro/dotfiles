@@ -1,9 +1,15 @@
+import os
+
+
+os.environ["PATH"] += ":/usr/local/bin"
+
+# pylint: disable=C0111
+c = c  # noqa: F821 pylint: disable=E0602,C0103
+config = config  # noqa: F821 pylint: disable=E0602,C0103
 
 config.load_autoconfig()
 
-import os
-os.environ["PATH"] += ":/usr/local/bin"
-
+c.colors.webpage.darkmode.enabled = True
 
 c.fonts.completion.entry = "Bold 12px VictorMono Nerd Font"
 c.fonts.completion.category = "Bold 12px VictorMono Nerd Font"
@@ -28,8 +34,10 @@ config.bind('R', 'config-source ;; message-info config-reloaded')
 c.content.headers.user_agent = "Mozilla/5.0 (X11; Linux i686; rv:79.0) Gecko/20100101 Firefox/79.0"
 c.content.webrtc_ip_handling_policy = "disable-non-proxied-udp"
 c.content.webgl = False
+c.qt.args = ['disable-logging', 'disable-reading-from-canvas']
 
-config.bind('o', 'set-cmd-text -s :open -t')
+
+config.bind('o', 'cmd-set-text -s :open -t')
 config.bind('j', 'scroll-px 0 200')
 config.bind('k', 'scroll-px 0 -200')
 config.bind('h', 'back')
@@ -54,8 +62,9 @@ config.set('tabs.title.format', '{audio}{index}: {host} - {current_title}')
 config.bind('gi', 'hint inputs --first')
 
 # spawnning
-config.bind(';m', 'hint links spawn /usr/local/bin/mpv "{hint-url}"')
-config.bind('M', 'spawn /usr/local/bin/mpv "{url}"')
+mpv_path = "/opt/homebrew/bin/mpv"
+config.bind(';m', 'hint links spawn ' + mpv_path + ' "{hint-url}"')
+config.bind('M', 'spawn ' + mpv_path + ' "{url}"')
 
 config.bind(';e', 'hint inputs ;; later 1000 edit-text')
 
@@ -65,21 +74,20 @@ config.bind("<Meta-q>", "close")
 qsites = {
     't': 'translate.google.com',
     'y': 'youtube.com',
-    'rr': 'old.reddit.com',
-    'rv': 'old.reddit.com/r/vim/new',
-    'rs': 'old.reddit.com/r/scala/new',
-    'rh': 'old.reddit.com/r/haskell/new',
+    # 'rr': 'old.reddit.com',
+    'rv': 'old.reddit.com/r/neovim/new',
+    # 'rs': 'old.reddit.com/r/scala/new',
+    # 'rh': 'old.reddit.com/r/haskell/new',
     'gt': 'github.com',
 }
 
-for k,v in qsites.items():
-    config.bind("gi" + k, 'open ' + v)
+for k, v in qsites.items():
     config.bind("gn" + k, 'open -t ' + v)
 
 
 c.downloads.location.directory = "~/Downloads"
 
-c.editor.command = ["/usr/local/bin/mvim", "-g", "-f", "{file}", "-c", "normal {line}G{column0}l"]
+c.editor.command = ["/opt/homebrew/bin/alacritty", "-e", "/opt/homebrew/bin/nvim", "{file}", "-c", "normal {line}G{column0}l"]
 
 config.set('hints.selectors', {'preview': ['.expando-button']}, pattern='*://*.reddit.com/*')
 
@@ -130,7 +138,7 @@ for domain in javascript_blacklist:
 
 config.set(
     'content.blocking.whitelist',
-    [ 
+    [
         'https://rockthejvm.com/*',
         'https://pipedream.wistia.com/*',
         'https://distillery.wistia.com'
