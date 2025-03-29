@@ -7,15 +7,11 @@ import = [
   # "~/.config/alacritty/comic-font.toml",
   "~/.config/alacritty/comic-nerd-font.toml"
   # "~/.config/alacritty/nerd-font.toml"
-  # "~/.config/alacritty/essential-pro-font.toml"
+  # "~/.config/alacritty/pragmata-pro-font.toml"
 ]
 
 [env]
 TERM = "xterm-256color"
-
-[font.offset]
-x = 0
-y = 0
 
 [window]
 decorations = "buttonless"

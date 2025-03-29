@@ -11,4 +11,8 @@ family = "Essential PragmataPro"
 style = "Regular"
 
 [font]
-size = 40.0
+size = 12.0
+
+[font.offset]
+x = 0
+y = 2
