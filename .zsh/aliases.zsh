@@ -1,6 +1,9 @@
 # basic
 
+
 alias ls="ls -G"
+alias rls="ls"
+alias eixt="exit"
 
 # shorter commands
 alias -g G="| egrep -i"
