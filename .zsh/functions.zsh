@@ -134,7 +134,7 @@ log_interactive_command() {
 l() {
   interaction_mode="chat"
   # model_name="anthropic/claude-3-7-sonnet-latest"
-  model_name="anthropic/claude-3-7-sonnet-20250219"
+  model_name="anthropic/claude-sonnet-4-5"
 
   logfile=~/.llm/$(date +"%Y-%m-%d").log
 
@@ -144,11 +144,17 @@ l() {
 
   # uvx llm install llm-anthropic llm-gemini
   # script $logfile uvx llm $interaction_mode -m $model_name
-  script $logfile llm chat -m 'claude-3.7-sonnet' 2>&1 | tee $logfile
+  script $logfile llm chat -m "$model_name" 2>&1 | tee $logfile
 }
 
 
 function yt_transcript(){
-    yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang en --sub-format ttml --convert-subs srt --output "transcript.%(ext)s" $1;
-    cat ./transcript.en.srt | sed '/^$/d' | grep -v '^[0-9]*$' | grep -v '\-->' | sed 's/<[^>]*>//g' | tr '\n' ' ' > output.txt;
+    yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang en --sub-format ttml --convert-subs srt --output "/var/tmp/transcript.%(ext)s" $1;
+    cat /var/tmp/transcript.en.srt | sed '/^$/d' | grep -v '^[0-9]*$' | grep -v '\-->' | sed 's/<[^>]*>//g' | tr '\n' ' ' > /var/tmp/output.txt;
+}
+
+function summarize() {
+  yt-dlp --skip-download --write-subs --write-auto-subs --sub-lang en --sub-format ttml --convert-subs srt --output "/var/tmp/transcript.%(ext)s" $1;
+  cat /var/tmp/transcript.en.srt | sed '/^$/d' | grep -v '^[0-9]*$' | grep -v '\-->' | sed 's/<[^>]*>//g' | tr '\n' ' ' > /var/tmp/output.txt;
+  cat /var/tmp/output.txt | fabric -sp extract_wisdom
 }
