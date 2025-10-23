@@ -1,5 +1,5 @@
 
-autoload -U edit-command-line
+autoload -Uz edit-command-line
 zle -N edit-command-line
 
 autoload history-search-end
