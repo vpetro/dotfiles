@@ -144,3 +144,13 @@ mods = "Command"
 chars = "\u0002\u000c"
 key = ";"
 mods = "Command"
+
+[[keyboard.bindings]]
+action = "ScrollPageUp"
+key = "LBracket"
+mods = "Command|Shift"
+
+[[keyboard.bindings]]
+action = "ScrollPageDown"
+key = "RBracket"
+mods = "Command|Shift"

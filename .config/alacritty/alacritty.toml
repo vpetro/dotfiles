@@ -5,7 +5,8 @@ import = [
   "~/.config/alacritty/keys.toml",
   "~/.config/alacritty/petro-colors.toml",
   # "~/.config/alacritty/comic-font.toml",
-  "~/.config/alacritty/comic-nerd-font.toml"
+   "~/.config/alacritty/comic-nerd-font.toml"
+  # "~/.config/alacritty/commit-mono.toml"
   # "~/.config/alacritty/nerd-font.toml"
   # "~/.config/alacritty/pragmata-pro-font.toml"
 ]
