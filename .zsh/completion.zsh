@@ -1,7 +1,7 @@
 fpath=(/usr/local/share/zsh-completions $fpath)
 
-autoload -U compinit && compinit
-zmodload -i zsh/complist
+# autoload -U compinit && compinit
+# zmodload -i zsh/complist
 
 # man zshcontrib
 # zstyle ':vcs_info:*' actionformats '%F{5}(%f%s%F{5})%F{3}-%F{5}[%F{2}%b%F{3}|%F{1}%a%F{5}]%f '
