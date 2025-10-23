@@ -1,9 +1,16 @@
-zmodload zsh/zprof
+# zmodload zsh/zprof
 
 integer t0=$(date '+%s')  # move this around
 
 fpath=($fpath $HOME/.zsh/functions)
 typeset -U fpath
+
+# skipt security check
+zmodload zsh/complist 2>/dev/null
+autoload -Uz compinit
+compinit -C
+
+eval "$(/opt/homebrew/bin/brew shellenv)"
 
 source ~/.zsh/setopt.zsh
 source ~/.zsh/colors.zsh
@@ -46,38 +53,48 @@ alias luamake=/Users/petrov/oss/lua-language-server/3rd/luamake/luamake
 
 eval $(/opt/homebrew/bin/brew shellenv)
 
-# python version management, just like sdkman
-eval "$(pyenv init -)"
-
 # load sdkman to manage jdk versions/tools
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
+# [[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # load nvm to manage nodejs versions
 # [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"
 
-# enable opam / ocaml setup
-[[ ! -r '/Users/petrov/.opam/opam-init/init.zsh' ]] || source '/Users/petrov/.opam/opam-init/init.zsh' > /dev/null 2> /dev/null
+# get shell completion for uv
+_uv_completion_file="${HOME}/.cache/uv-completion.zsh"
 
+# Create cache directory if it doesn't exist
+[[ ! -d "${HOME}/.cache" ]] && mkdir -p "${HOME}/.cache"
 
-# #  add direnv - loading of env vars per project
-# # ensure compatibility tmux <-> direnv
-# if [ -n "$TMUX" ] && [ -n "$DIRENV_DIR" ]; then
-#   # unset env vars starting with DIRENV_
-#   unset -m "DIRENV_*"
-# fi
-# eval "$(direnv hook zsh)"
+# Generate completions if cache doesn't exist or uv is newer than cache
+if [[ ! -f "$_uv_completion_file" ]] || [[ "$(which uv)" -nt "$_uv_completion_file" ]]; then
+    uv generate-shell-completion zsh > "$_uv_completion_file"
+fi
+
+source "$_uv_completion_file"
+
 
 if [ -n "$TMUX" ]; then
   eval "$(direnv hook zsh)"
 fi
 
+
 # notify if startup time is too long
-function {
-    local -i t1 startup
-    t1=$(date '+%s')
-    startup=$(( t1 - t0 ))
-    [[ $startup -gt 1 ]] && print "Hmm, poor shell startup time: $startup"
-}
+# function {
+#     local -i t1 startup
+#     t1=$(date '+%s')
+#     startup=$(( t1 - t0 ))
+#     [[ $startup -gt 1 ]] && print "Hmm, poor shell startup time: $startup"
+# }
 unset t0
 
+# zprof
 
+nv() {
+  local appname=$1
+  shift
+  if [ "$#" -eq 0 ]; then
+    NVIM_APPNAME=$appname command nvim
+  else
+    NVIM_APPNAME=$appname command nvim "$@"
+  fi
+}
