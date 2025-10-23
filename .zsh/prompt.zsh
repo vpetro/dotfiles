@@ -1,5 +1,5 @@
-autoload -U colors && colors
-autoload -U promptinit && promptinit
+autoload -Uz colors && colors
+autoload -Uz promptinit && promptinit
 autoload -U zgitinit && zgitinit
 
 fpath=($fpath $HOME/.zsh/functions)
@@ -10,6 +10,23 @@ function current_dir_path {
     CURRENT=$(print -P %2~)
     echo $CURRENT
 }
+
+# function git_status {
+#     # just show nothing here right now, we can get status manually
+#     echo "%F{240}"
+#     return
+#     # commeted out below because it is slow for some reason now
+#     # local branch=$(zgit_branch)
+#     # local prompt=""
+#     # if zgit_inworktree; then
+#     #     if zgit_isworktreeclean; then
+#     #         prompt="%F{240}${branch}"
+#     #     else
+#     #         prompt="%{$fg[green]%}${branch}"
+#     #     fi
+#     # fi
+#     # echo $prompt
+# }
 
 function git_status {
     local branch=$(zgit_branch)
