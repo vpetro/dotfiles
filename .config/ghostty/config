@@ -1,45 +1,113 @@
-background = 000000
-# font-family = "Monaco"
-# font-family = "ComicCode Nerd Font"
+# Font
 
-font-family = "Essential PragmataPro"
-# font-family = "ComicCodeLigatures Nerd Font"
-# font-family = "Victor Mono"
+# font-family = Comic Code
+# font-style = Medium
+# font-style-bold = Medium
+# font-style-italic = Medium
+# font-size = 12
+# adjust-cell-height = 3 
+# adjust-cell-width = 0
+
+font-family = JetBrainsMono Nerd Font
+font-style = Light
+font-style-bold = Light
+font-style-italic = Light
 font-size = 14
 
-theme = "Tomorrow Night Bright"
+# font-family = Essential PragmataPro
+# font-style = Regular
+# font-style-bold = Regular
+# font-style-italic = Regular
+# font-size = 16
+# adjust-cell-height = 1
 
-window-decoration = false
+# font-family = ComicCodeLigatures Nerd Font
+# font-style = Regular
+# font-style-bold = Regular
+# font-style-italic = Regular
+# font-size = 12
+# adjust-cell-height = -10
+# adjust-cell-width = 0
+# font-thicken = true
+# font-thicken-strength = 0
 
-font-thicken = true
-# adjust-font-baseline = 0
-adjust-cell-height = 0
+# Window
+macos-titlebar-style = hidden
+window-padding-x = 5
+window-padding-y = 5
+background-opacity = 1
+confirm-close-surface = false
 
-keybind = cmd+shift+r=reload_config
+# Colors
+config-file = colors/nord-custom.conf
+# theme = TokyoNight
 
-# tmux keybinds
-keybind = cmd+[=text:\x02p
-keybind = cmd+]=text:\x02n
-keybind = cmd+t=text:\x02\x0a
-keybind = cmd+j=text:\x02j
-keybind = cmd+k=text:\x02k
-keybind = cmd+s=text:\x02-
-keybind = cmd+d=text:\x02\\
-keybind = cmd+o=text:\x02c
-keybind = cmd+shift+h=text:\x02H
-keybind = cmd+shift+j=text:\x02J
-keybind = cmd+shift+k=text:\x02K
-keybind = cmd+shift+l=text:\x02L
-keybind = cmd+m=text:\x02u
+# Keybindings
 
-# tmux pane movement
-keybind = cmd+1=text:\x021
-keybind = cmd+2=text:\x022
-keybind = cmd+3=text:\x023
-keybind = cmd+4=text:\x024
-keybind = cmd+5=text:\x025
-keybind = cmd+6=text:\x026
-keybind = cmd+7=text:\x027
-keybind = cmd+8=text:\x028
-keybind = cmd+9=text:\x029
+# Reload config with Cmd+,
+keybind = super+,=reload_config
 
+# Spawn new instance
+keybind = super+n=new_window
+
+# Alt+Space sends a literal space (override macOS default)
+keybind = alt+space=text:\x20
+
+# Unbind Ghostty's default bracket bindings (split navigation)
+keybind = super+[=unbind
+keybind = super+]=unbind
+
+# Tmux: previous/next window
+keybind = super+left_bracket=text:\x02p
+keybind = super+right_bracket=text:\x02n
+
+# Tmux: new window (prefix + Enter)
+keybind = super+t=text:\x02\x0a
+
+# Tmux: pane navigation
+keybind = super+j=text:\x02j
+keybind = super+k=text:\x02k
+
+# Tmux: splits (prefix + -, prefix + \)
+keybind = super+s=text:\x02-
+keybind = super+d=text:\x02\x5c
+
+# Tmux: new window (prefix + c)
+keybind = super+o=text:\x02c
+
+# Tmux: resize panes
+keybind = super+shift+h=text:\x02H
+keybind = super+shift+j=text:\x02J
+keybind = super+shift+k=text:\x02K
+keybind = super+shift+l=text:\x02L
+
+# Tmux: custom (prefix + u)
+keybind = super+m=text:\x02u
+
+# Unbind Ghostty's default tab switching (uses digit_N internally)
+keybind = super+digit_1=unbind
+keybind = super+digit_2=unbind
+keybind = super+digit_3=unbind
+keybind = super+digit_4=unbind
+keybind = super+digit_5=unbind
+keybind = super+digit_6=unbind
+keybind = super+digit_7=unbind
+keybind = super+digit_8=unbind
+keybind = super+digit_9=unbind
+
+# Tmux: select window 1-9
+keybind = super+one=text:\x021
+keybind = super+two=text:\x022
+keybind = super+three=text:\x023
+keybind = super+four=text:\x024
+keybind = super+five=text:\x025
+keybind = super+six=text:\x026
+keybind = super+seven=text:\x027
+keybind = super+eight=text:\x028
+keybind = super+nine=text:\x029
+
+# Toggle fullscreen
+keybind = super+enter=toggle_fullscreen
+
+# Tmux: prefix + Ctrl-L
+keybind = super+semicolon=text:\x02\x0c
