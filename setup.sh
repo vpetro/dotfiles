@@ -74,14 +74,26 @@ if [[ -d "$ALFRED_WF" ]]; then
     for wf in "$CUR_DIR"/alfred-workflows/*/; do
         [[ -d "$wf" ]] || continue
         name="$(basename "$wf")"
-        # Deterministic name so re-running is idempotent.
-        dst="$ALFRED_WF/user.workflow.dotfiles.$name"
+        # Alfred only recognises directories named user.workflow.<UUID>; any
+        # other suffix is listed nowhere. Derive a stable UUIDv5 from the
+        # workflow name so re-running lands on the same directory.
+        uuid="$(python3 -c "import uuid,sys; print(str(uuid.uuid5(uuid.NAMESPACE_URL, 'dotfiles://'+sys.argv[1])).upper())" "$name")"
+        dst="$ALFRED_WF/user.workflow.$uuid"
+
+        # Clean up installs from earlier naming schemes.
+        for stale in "$ALFRED_WF/user.workflow.dotfiles.$name"; do
+            if [[ -e "$stale" || -L "$stale" ]]; then
+                echo "  removing stale install: $(basename "$stale")"
+                rm -rf "$stale"
+            fi
+        done
 
         if [[ -L "$dst" ]]; then
             echo "  replacing stale symlink: $name"
             rm "$dst"
         fi
         mkdir -p "$dst"
+        echo "  workflow          $name -> user.workflow.$uuid"
 
         for f in "${wf%/}"/*; do
             base="$(basename "$f")"
