@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.pverkhogliad.slack-jump</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>1F38A391-7C97-4E5A-A3EB-F72722BC8378</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>8EE62471-6274-4337-BD40-C2CD76DD8108</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>pverkhogliad</string>
+	<key>description</key>
+	<string>Jump straight to a Slack DM or channel from a roster of teammates. Replaces the Hammerspoon hs.chooser teleporter.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Slack Jump</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<key>argumenttype</key>
+				<integer>2</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>sl</string>
+				<key>script</key>
+				<string>./search.py "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Jump to a teammate DM or project channel</string>
+				<key>title</key>
+				<string>Slack jump</string>
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>1F38A391-7C97-4E5A-A3EB-F72722BC8378</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>./action.sh "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>8EE62471-6274-4337-BD40-C2CD76DD8108</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Type  sl            to list the whole roster.
+Type  sl &lt;query&gt;    to filter by name, title, or keyword.
+
+The roster lives in roster.json next to the scripts -- adding or
+removing a teammate is a data edit, not a code edit.
+
+Slack ID prefixes decide the deep-link form:
+  D... DM conversation  -&gt; slack://channel  (cursor lands in the message box)
+  C... channel          -&gt; slack://channel
+  U... / W... user      -&gt; slack://user     (opens/creates the DM)
+Prefer a D... id when you have one.
+
+Requires Python 3 (ships with macOS) and the Slack desktop app.</string>
+	<key>uidata</key>
+	<dict>
+		<key>1F38A391-7C97-4E5A-A3EB-F72722BC8378</key>
+		<dict>
+			<key>xpos</key>
+			<integer>40</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+		<key>8EE62471-6274-4337-BD40-C2CD76DD8108</key>
+		<dict>
+			<key>xpos</key>
+			<integer>300</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.0.0</string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>

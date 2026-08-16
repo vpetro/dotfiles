@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>bundleid</key>
+	<string>com.pverkhogliad.firefox-search</string>
+	<key>category</key>
+	<string>Productivity</string>
+	<key>connections</key>
+	<dict>
+		<key>4C7CBF05-E01E-4529-8B68-C6BD494842C9</key>
+		<array>
+			<dict>
+				<key>destinationuid</key>
+				<string>99FAEB8D-9298-4AC7-BF86-7A64CBE66199</string>
+				<key>modifiers</key>
+				<integer>0</integer>
+				<key>modifiersubtext</key>
+				<string></string>
+				<key>vitoclose</key>
+				<false/>
+			</dict>
+		</array>
+	</dict>
+	<key>createdby</key>
+	<string>pverkhogliad</string>
+	<key>description</key>
+	<string>Search Firefox tabs (via brotab) and recent history (via places.sqlite). Selecting a tab jumps to it; selecting a history entry opens it in Firefox.</string>
+	<key>disabled</key>
+	<false/>
+	<key>name</key>
+	<string>Firefox Search</string>
+	<key>objects</key>
+	<array>
+		<dict>
+			<key>config</key>
+			<dict>
+				<!-- We do filtering ourselves so multi-word AND works. Alfred's
+				     built-in filter would be substring-fuzzy only. -->
+				<key>alfredfiltersresults</key>
+				<false/>
+				<key>argumenttrimmode</key>
+				<integer>0</integer>
+				<!-- 1 = optional (so `ff` alone shows everything). -->
+				<key>argumenttype</key>
+				<integer>1</integer>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>keyword</key>
+				<string>ff</string>
+				<!-- Pass the query as a positional arg via {query}. -->
+				<key>script</key>
+				<string>./search.py "{query}"</string>
+				<!-- 0 = argv ($1), 1 = stdin. We use $1. -->
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>subtext</key>
+				<string>Jump to tab or open history URL</string>
+				<key>title</key>
+				<string>Firefox tabs + history</string>
+				<!-- 0 = bash -->
+				<key>type</key>
+				<integer>0</integer>
+				<key>withspace</key>
+				<true/>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.input.scriptfilter</string>
+			<key>uid</key>
+			<string>4C7CBF05-E01E-4529-8B68-C6BD494842C9</string>
+			<key>version</key>
+			<integer>3</integer>
+		</dict>
+		<dict>
+			<key>config</key>
+			<dict>
+				<key>concurrently</key>
+				<false/>
+				<key>escaping</key>
+				<integer>102</integer>
+				<key>script</key>
+				<string>./action.sh "{query}"</string>
+				<key>scriptargtype</key>
+				<integer>0</integer>
+				<key>scriptfile</key>
+				<string></string>
+				<key>type</key>
+				<integer>0</integer>
+			</dict>
+			<key>type</key>
+			<string>alfred.workflow.action.script</string>
+			<key>uid</key>
+			<string>99FAEB8D-9298-4AC7-BF86-7A64CBE66199</string>
+			<key>version</key>
+			<integer>2</integer>
+		</dict>
+	</array>
+	<key>readme</key>
+	<string>Type  ff &lt;query&gt;  in Alfred to search your open Firefox tabs and recent history.
+
+Requires:
+- brotab installed via uv  (uv tool install brotab)
+- Firefox with the brotab extension installed and connected
+- Python 3 (ships with macOS)
+- Full Disk Access granted to Alfred (for places.sqlite)</string>
+	<key>uidata</key>
+	<dict>
+		<key>4C7CBF05-E01E-4529-8B68-C6BD494842C9</key>
+		<dict>
+			<key>xpos</key>
+			<integer>40</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+		<key>99FAEB8D-9298-4AC7-BF86-7A64CBE66199</key>
+		<dict>
+			<key>xpos</key>
+			<integer>360</integer>
+			<key>ypos</key>
+			<integer>40</integer>
+		</dict>
+	</dict>
+	<key>version</key>
+	<string>1.1.0</string>
+	<key>webaddress</key>
+	<string></string>
+</dict>
+</plist>
