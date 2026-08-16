@@ -1,8 +1,3 @@
-[user]
-    name = Petro Verkhogliad
-    email = vpetro@gmail.com
-    signingkey = AC9C9A77
-
 [color]
     ui = auto
 
@@ -68,6 +63,7 @@
 
 [push]
     default = current
+    autoSetupRemote = true
 
 [gc]
     auto = 1
@@ -93,3 +89,16 @@
 [mergetool "nvim"]
   cmd = "nvim -d -c \"wincmd l\" -c \"norm ]c\" \"$LOCAL\" \"$MERGED\" \"$REMOTE\""
 
+[includeIf "gitdir:~/code/yahoo/**"]
+  path = ~/.gitconfig-yahoo
+
+[includeIf "gitdir:~/code/petro/**"]
+  path = ~/.gitconfig-petro
+[gpg]
+	program = /usr/local/MacGPG2/bin/gpg2
+[credential "https://github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/opt/homebrew/bin/gh auth git-credential

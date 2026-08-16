@@ -1,45 +1,51 @@
+# Shell behavior
+export KEYTIMEOUT=1           # vi-mode: faster ESC response
+export DISABLE_AUTO_TITLE=true # don't let oh-my-zsh-style plugins retitle the tab
 
-export KEYTIMEOUT=1
-export DISABLE_AUTO_TITLE="true"
-
-export SDKMAN_DIR="$HOME/.sdkman"
-export PYENV_ROOT="$HOME/.pyenv"
-
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:$PATH
-export PATH=/usr/X11/bin:$PATH
-export PATH=/usr/local/sbin:/usr/local/bin:$PATH
-export PATH=$HOME/.cabal/bin:$PATH
-export PATH=/usr/local/texlive/2016basic/bin/x86_64-darwin:$PATH
-#export PATH=/usr/local/opt/python@2/libexec/bin:$PATH
-# pyenv bin
-export PATH=$PYENV_ROOT/bin:$PATH
-export PATH=$HOME/.local/bin:$PATH
-# rust cargo bin
-export PATH=$HOME/.cargo/bin:$PATH
-export PATH="/Users/petrov/Library/Application Support/Coursier/bin:$PATH"
-export PATH="/opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin/:$PATH"
-export PATH=$HOME/bin:$PATH
-
-
-
-export GIT_EDITOR="nvim"
+# Editors (everything points at nvim)
 export EDITOR="nvim"
-export VISUAL=$EDITOR
+export VISUAL="$EDITOR"
+export GIT_EDITOR="$EDITOR"
+export JIRA_EDITOR="$EDITOR"
 
-export WORKON_HOME=~/envs
+# Notes directory (used by personal note-taking tools)
 export NOTES_DIR=~/notes
 
+# fzf: use ripgrep for file search; include hidden, skip .git
 export FZF_DEFAULT_COMMAND='rg --files --smart-case --hidden --no-ignore --no-follow --glob "!.git/*"'
 
+# Homebrew: skip Gatekeeper quarantine prompt on every cask install
 export HOMEBREW_CASK_OPTS="--no-quarantine"
 
+# GKE auth helper required for kubectl against GKE clusters
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
 
-export NVM_DIR="$HOME/.nvm"
-
-# completion for google cloud cli
-# source "$(brew --prefix)/share/google-cloud-sdk/path.zsh.inc
-# source "$(brew --prefix)/share/google-cloud-sdk/completion.zsh.inc
-#
+# uv: use subprocess keyring provider (works with private package indexes)
 export UV_KEYRING_PROVIDER=subprocess
+
+# Virtualenv: our prompt renders the venv; prevent `activate` scripts from also
+# prefixing `(venv)` to PS1.
+export VIRTUAL_ENV_DISABLE_PROMPT=1
+
+# Tell self-updating tools (Claude Code, etc.) to stay put.
+export DISABLE_AUTOUPDATER=1
+
+# Yubikey PIN keychain entry label
+export KEYCHAIN_YUBIPIN_ENTRY="yubikey PIN"
+
+# Have to export this because of colima
+export DOCKER_HOST="unix:///Users/pverkhogliad/.colima/default/docker.sock"
+
+export GH_HOST="github.com"
+
+# PATH additions not already provided by /etc/paths / /etc/paths.d / brew.
+# `typeset -U path` (set in setopt.zsh) dedupes automatically, so these are
+# safe to add even if something else also adds them.
+path=(
+    "$HOME/.bin"
+    "$HOME/.cargo/bin"
+    "$HOME/.rd/bin"
+    /opt/homebrew/Caskroom/google-cloud-sdk/latest/google-cloud-sdk/bin
+    $path
+)
 
