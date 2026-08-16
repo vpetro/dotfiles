@@ -20,7 +20,7 @@ local function bindHyper()
   end
 end
 
-M = {}
+local M = {}
 
 M.hyper = bindHyper()
 

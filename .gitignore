@@ -16,3 +16,14 @@ graphite
 op
 .config/gh/hosts.yml
 .config/karabiner/automatic_backups
+.zsh/cache/
+.zsh/functions/_uv
+.ipython/profile_petro/db/
+.ipython/profile_petro/log/
+.ipython/profile_petro/pid/
+.ipython/profile_petro/security/
+bin/.env
+bin/meetctl
+bin/meetctl.pre-cdp.bak
+.claude/
+.config/ghostty/.claude/

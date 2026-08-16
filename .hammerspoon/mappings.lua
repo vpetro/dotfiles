@@ -1,62 +1,74 @@
-local hs = hs
-local kb = require("keyboard")
+-- Hotkey bindings.
+--
+-- Layout: hyper+<letter> for window sizing / app launching / space switching.
+-- NOTE: hyper+9 is intentionally reclaimed by meet.lua after this file loads,
+-- which is fine as long as you have <=8 spaces.
 
-local gridset = function(x, y, w, h)
+local kb     = require("keyboard")
+local spaces = require("spaces")
+
+-- Wrap a function that needs the focused window. Bindings fired on an empty
+-- space (or while a non-window app is frontmost) would otherwise index nil.
+local function withFocused(fn)
     return function()
-        win = hs.window.focusedWindow()
-        hs.grid.set(
-            win,
-            {x=x, y=y, w=w, h=h},
-            win:screen()
-        )
+        local win = hs.window.focusedWindow()
+        if not win then return end
+        fn(win)
     end
 end
 
-local function move_windows()
-  hs.hotkey.bind(kb.hyper, 's', gridset(0, 0, 100, 100))
-  -- left half
-  hs.hotkey.bind(kb.hyper, 'a', gridset(0, 0, 50, 100))
-  -- right half
-  hs.hotkey.bind(kb.hyper, 'd', gridset(50, 0, 50, 100))
-
-  hs.hotkey.bind(kb.hyper, 'q', gridset(0, 0, 33, 100))
-  hs.hotkey.bind(kb.hyper, 'w', gridset(33, 0, 33, 100))
-  hs.hotkey.bind(kb.hyper, 'e', gridset(66, 0, 34, 100))
-
-  hs.hotkey.bind(kb.hyper, 'x', gridset(25, 0, 50, 100))
+-- Build a window-grid setter.
+local function gridset(x, y, w, h)
+    return withFocused(function(win)
+        hs.grid.set(win, { x = x, y = y, w = w, h = h }, win:screen())
+    end)
 end
 
-local function move_monitors()
-  hs.hotkey.bind(kb.hyper, "n", function() return hs.window.focusedWindow():moveOneScreenWest() end)
-  hs.hotkey.bind(kb.hyper, "m", function() return hs.window.focusedWindow():moveOneScreenEast() end)
+-- Window-region bindings: hyper+<key>  -> set focused window to {x,y,w,h}.
+local region_bindings = {
+    s = { 0,  0, 100, 100 },  -- full screen
+    a = { 0,  0,  50, 100 },  -- left half
+    d = { 50, 0,  50, 100 },  -- right half
+    q = { 0,  0,  33, 100 },  -- left third
+    w = { 33, 0,  33, 100 },  -- middle third
+    e = { 66, 0,  34, 100 },  -- right third
+    x = { 25, 0,  50, 100 },  -- centered half
+}
+for key, rect in pairs(region_bindings) do
+    hs.hotkey.bind(kb.hyper, key, gridset(table.unpack(rect)))
 end
 
-local function setup()
+-- Cross-monitor window movement.
+hs.hotkey.bind(kb.hyper, "n", withFocused(function(w) w:moveOneScreenWest() end))
+hs.hotkey.bind(kb.hyper, "m", withFocused(function(w) w:moveOneScreenEast() end))
 
-  move_windows()
-  move_monitors()
+-- Window minimize.
+hs.hotkey.bind(kb.hyper, "h",  withFocused(function(w) w:minimize() end))
+hs.hotkey.bind(kb.hyper, "\\", function()
+    local win = hs.window.frontmostWindow()
+    if win then win:minimize() end
+end)
 
-  hs.hotkey.bind(kb.hyper, "h", function() return hs.window.focusedWindow():minimize() end)
+-- Reload Hammerspoon config.
+hs.hotkey.bind(kb.hyper, "r", hs.reload)
 
-  -- moving applications
-  hs.hotkey.bind(kb.hyper, "r", function() hs.reload() end)
-  hs.hotkey.bind(kb.hyper, "k", function() hs.application.launchOrFocus("LibreWolf") end)
-  -- hs.hotkey.bind(kb.hyper, "i", function() hs.application.launchOrFocus("qutebrowser") end)
-  hs.hotkey.bind(kb.hyper, "j", function() hs.application.launchOrFocus("Alacritty") end)
-  hs.hotkey.bind(kb.hyper, "l", function() hs.application.launchOrFocus("Slack") end)
-  hs.hotkey.bind(kb.hyper, "p", function() hs.application.launchOrFocus("Skim") end)
-  hs.hotkey.bind(kb.hyper, "v", function() hs.application.launchOrFocus("mpv") end)
-
-  hs.hotkey.bind(kb.hyper, "`", function() hs.application.launchOrFocus("mpv") end)
-
-  -- hs.hotkey.bind(kb.hyper, ".", function() findZoomWindow() end)
-  -- hs.hotkey.bind(kb.hyper, "'", function() hs.window.find("presentation.pdf"):focus() end)
-
-  hs.hotkey.bind(kb.hyper, "\\", function() hs.window.frontmostWindow():minimize() end)
+-- App launchers: hyper+<key> -> launchOrFocus(app).
+-- (hyper+p is claimed by meet.lua for Meet screen-sharing toggle.)
+local app_bindings = {
+    k = "Firefox",
+    j = "Alacritty",
+    l = "Slack",
+    v = "mpv",
+}
+for key, app in pairs(app_bindings) do
+    hs.hotkey.bind(kb.hyper, key, function() hs.application.launchOrFocus(app) end)
 end
 
-M = {}
+-- Instant space switching (no animation; see spaces.lua).
+hs.hotkey.bind({ "ctrl" }, "left",  function() spaces.switchSpace("left")  end)
+hs.hotkey.bind({ "ctrl" }, "right", function() spaces.switchSpace("right") end)
 
-setup()
-
-return M
+-- Jump to space by number: hyper+1..9 (9 gets overridden by meet.lua).
+for i = 1, 9 do
+    hs.hotkey.bind(kb.hyper, tostring(i), function() spaces.switchToIndex(i) end)
+end
