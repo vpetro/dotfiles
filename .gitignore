@@ -27,3 +27,4 @@ bin/meetctl
 bin/meetctl.pre-cdp.bak
 .claude/
 .config/ghostty/.claude/
+.local/
