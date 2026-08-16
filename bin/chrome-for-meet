@@ -31,6 +31,18 @@
 # monitors mid-session the flag doesn't re-evaluate. If the behaviour
 # starts picking the wrong screen, quit Chrome-for-Meet (cmd+Q) and click
 # any Meet link again to relaunch with fresh detection.
+#
+# Launching needs `open -n`, not plain `open -a`. Without -n, LaunchServices
+# just activates an already-running Chrome and discards --args entirely, so
+# with a normal Chrome session open this script would raise that window and
+# never set the debugging port -- leaving meetctl with nothing to talk to.
+# -n forces a separate instance, which is legal here because --user-data-dir
+# differs, and the flags actually apply.
+#
+# If our own instance is already up, Chrome's profile lock makes the new
+# process forward the URL to it and exit. Launching via `open` also means
+# launchd owns the process, so it survives the caller exiting -- a plain
+# background job would die with its process group.
 
 NSCREENS=""
 
@@ -59,8 +71,41 @@ else
     SOURCE="Entire screen"
 fi
 
-exec open -a "Google Chrome" --args \
-    --user-data-dir="$HOME/.chrome-for-meet" \
+CHROME_APP="/Applications/Google Chrome.app"
+PROFILE="$HOME/.chrome-for-meet"
+
+if [[ ! -d "$CHROME_APP" ]]; then
+    echo "chrome-for-meet: no Chrome at $CHROME_APP" >&2
+    exit 1
+fi
+
+# The main browser process for our profile, ignoring renderer/GPU helpers
+# (which carry --type=) and any Chrome running on a different profile.
+meet_chrome_pid() {
+    ps -eo pid=,command= \
+        | grep -- "--user-data-dir=$PROFILE" \
+        | grep -v -- "--type=" \
+        | grep -v "grep" \
+        | awk '{print $1}' \
+        | head -1
+}
+
+open -n -a "$CHROME_APP" --args \
+    --user-data-dir="$PROFILE" \
     --remote-debugging-port=9222 \
     --auto-select-desktop-capture-source="$SOURCE" \
     "$@"
+
+# Raise our instance. Plain `tell application "Google Chrome" to activate`
+# is ambiguous with two instances of the same bundle, so target the PID.
+for _ in 1 2 3 4 5 6 7 8 9 10; do
+    pid="$(meet_chrome_pid)"
+    if [[ -n "$pid" ]]; then
+        osascript -e "tell application \"System Events\" to set frontmost of (first process whose unix id is $pid) to true" \
+            >/dev/null 2>&1 || true
+        break
+    fi
+    sleep 0.3
+done
+
+exit 0
