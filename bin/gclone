@@ -1,0 +1,27 @@
+#!/bin/bash
+
+set -euo pipefail
+
+is_subdir_of() {
+    local parent="$1"
+    local current="$(pwd)"
+    
+    # Resolve any symlinks and relative paths
+    parent="$(realpath "$parent" 2>/dev/null)" || parent="$1"
+    current="$(realpath "$current")"
+    
+    [[ "$current" == "$parent"* ]]
+}
+
+repository_url=$1
+updated_url=$repository_url
+
+if is_subdir_of "${HOME}/code/petro"; then
+  updated_url=$(echo $repository_url | sed s/github\.com/pgit/g)
+elif is_subdir_of "${HOME}/code/yahoo"; then
+  updated_url=$(echo $repository_url | sed s/github\.com/ygit/g)
+else
+  updated_url=$repository_url
+fi
+
+git clone ${updated_url}

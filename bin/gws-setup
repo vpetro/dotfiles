@@ -1,0 +1,67 @@
+#!/bin/bash
+# One-time setup for Google Workspace CLI (gws):
+#   1. Pull the gws-cli OAuth client credentials from Google Secret Manager
+#      (uses your already-authenticated gcloud session from `workon`).
+#   2. Write them as client_secret.json in ~/.config/gws/ (the exact path +
+#      filename gws reads from).
+#   3. Run `gws auth login` to do the one-time OAuth flow (browser) and
+#      cache an encrypted refresh token in your macOS Keychain.
+#
+# After that, `gws <service> <resource> <method>` just works.
+#
+# Usage:
+#     workon prod              # or dev; we need gcloud auth for the secret fetch
+#     gws-setup
+#
+# Override secret names if they differ:
+#     CLIENT_ID_SECRET=... CLIENT_SECRET_SECRET=... gws-setup
+
+set -euo pipefail
+
+: "${CLIENT_ID_SECRET:=gwscli-oauth-client-id}"
+: "${CLIENT_SECRET_SECRET:=gwscli-oauth-client-secret}"
+
+out_dir="$HOME/.config/gws"
+# gws expects this exact filename (singular "secret"):
+out_file="$out_dir/client_secret.json"
+mkdir -p "$out_dir"
+chmod 700 "$out_dir"
+
+client_id=$(gcloud secrets versions access latest --secret="$CLIENT_ID_SECRET")
+client_secret=$(gcloud secrets versions access latest --secret="$CLIENT_SECRET_SECRET")
+
+# NOTE: `project_id` is required by gws's JSON schema
+# (crates/google-workspace-cli/src/oauth_config.rs :: InstalledConfig).
+# Missing it causes silent serde rejection and "No OAuth client configured".
+# Empty string is fine -- the field is used only for display/hints, not auth.
+cat > "$out_file" <<JSON
+{
+    "installed": {
+        "client_id": "$client_id",
+        "client_secret": "$client_secret",
+        "project_id": "",
+        "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+        "token_uri": "https://oauth2.googleapis.com/token",
+        "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+        "redirect_uris": ["http://localhost"]
+    }
+}
+JSON
+chmod 600 "$out_file"
+
+echo "Wrote $out_file"
+echo ""
+# Use the brew-installed gws directly. A site-managed wrapper
+# (~/.local/bin/gws) can shadow this, and if it has bugs it prevents
+# login; calling by absolute path sidesteps it.
+GWS_BIN="/opt/homebrew/bin/gws"
+if [[ ! -x "$GWS_BIN" ]]; then
+    echo "gws not installed. Install with:"
+    echo "    brew install googleworkspace-cli"
+    echo
+    echo "Then run this script again."
+    exit 0
+fi
+
+echo "Running '$GWS_BIN auth login' to complete the OAuth flow..."
+exec "$GWS_BIN" auth login

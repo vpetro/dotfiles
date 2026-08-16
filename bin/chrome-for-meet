@@ -1,0 +1,66 @@
+#!/bin/bash
+# Launch Chrome (or hand a URL to a running Chrome-for-Meet instance) with
+# Meet-specific launch flags.
+#
+# Flags set on first launch (subsequent invocations reuse the running
+# instance, the flags-at-launch stay in effect):
+#
+#   --user-data-dir=~/.chrome-for-meet
+#       Isolates this Chrome from any other Chrome you might run (work
+#       profile for general browsing, etc.). First launch creates an
+#       empty profile; you sign in once.
+#
+#   --remote-debugging-port=9222
+#       Exposes CDP on localhost so `meetctl` can drive Meet from the shell
+#       / Hammerspoon without an extension.
+#
+#   --auto-select-desktop-capture-source="<source>"
+#       Skips getDisplayMedia's picker dialog. Safe here because this Chrome
+#       only ever visits meet.google.com -- no third party can exploit it.
+#       The source name is chosen based on how many screens are connected
+#       at launch time.
+#
+# Usage:
+#     chrome-for-meet [--screens=N] <url>
+#
+# When called by Hammerspoon's urlhandler, --screens is passed based on
+# #hs.screen.allScreens() so we pick Screen 2 (= external) when docked.
+# Manual shell invocations without --screens default to 1 screen.
+#
+# Note: --auto-select-* is evaluated at Chrome launch. If you plug/unplug
+# monitors mid-session the flag doesn't re-evaluate. If the behaviour
+# starts picking the wrong screen, quit Chrome-for-Meet (cmd+Q) and click
+# any Meet link again to relaunch with fresh detection.
+
+NSCREENS=""
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --screens=*) NSCREENS="${1#--screens=}"; shift ;;
+        --)          shift; break ;;
+        *)           break ;;
+    esac
+done
+
+# If --screens wasn't passed (e.g. meetctl invokes us directly when Chrome
+# isn't running), detect via system_profiler. ~500ms on cold caches, but
+# this path only fires when bootstrapping Chrome from scratch.
+if [[ -z "$NSCREENS" ]]; then
+    NSCREENS=$(/usr/sbin/system_profiler SPDisplaysDataType 2>/dev/null \
+                | grep -c "Resolution:")
+    NSCREENS="${NSCREENS:-1}"
+fi
+
+if [[ "$NSCREENS" -ge 2 ]]; then
+    # External monitor assumed to be Screen 2 (laptop = Screen 1). If your
+    # layout inverts (external as primary), swap to "Screen 1" here.
+    SOURCE="Screen 2"
+else
+    SOURCE="Entire screen"
+fi
+
+exec open -a "Google Chrome" --args \
+    --user-data-dir="$HOME/.chrome-for-meet" \
+    --remote-debugging-port=9222 \
+    --auto-select-desktop-capture-source="$SOURCE" \
+    "$@"

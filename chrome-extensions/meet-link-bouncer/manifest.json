@@ -1,0 +1,15 @@
+{
+    "manifest_version": 3,
+    "name": "Meet Link Bouncer",
+    "version": "1.0.0",
+    "description": "In Chrome-for-Meet: intercept non-Meet link clicks and bounce them to the system default browser (Hammerspoon -> Firefox) via a hammerspoon:// URL.",
+    "host_permissions": ["https://meet.google.com/*"],
+    "content_scripts": [
+        {
+            "matches": ["https://meet.google.com/*"],
+            "js": ["content.js"],
+            "run_at": "document_idle",
+            "all_frames": true
+        }
+    ]
+}

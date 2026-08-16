@@ -1,0 +1,190 @@
+#!/bin/bash
+# md-to-clipboard: read markdown from stdin, put both HTML (with inline
+# styles via a pandoc Lua filter) and plain-text flavours on the macOS
+# clipboard.
+#
+# - Rich-text editors (Google Docs, Slack, Notion, Linear, Jira) pick
+#   the HTML and render with the styles defined below.
+# - Plain-text targets (terminals, code editors) get the original markdown.
+#
+# Inline styles survive Google Docs' paste filter; external stylesheets
+# and <style> blocks don't. That's why we inject `style="..."` attributes
+# onto each element via the Lua filter below.
+#
+# Use from nvim:
+#     :%w !md-to-clipboard                 " whole buffer
+#     :'<,'>w !md-to-clipboard              " visual selection
+#
+# Or as a keymap:
+#     nnoremap <leader>mc :%w !md-to-clipboard<CR><CR>
+#     vnoremap <leader>mc :w !md-to-clipboard<CR><CR>
+#
+# To tweak styling, edit the Lua heredoc below.
+
+set -euo pipefail
+
+tmp_md=$(mktemp)
+tmp_html=$(mktemp)
+tmp_rtf=$(mktemp)
+tmp_lua=$(mktemp)
+tmp_py=$(mktemp)
+trap 'rm -f "$tmp_md" "$tmp_html" "$tmp_rtf" "$tmp_lua" "$tmp_py"' EXIT
+
+cat > "$tmp_md"
+
+# --- Pandoc Lua filter: inline-style each element type. ---
+#
+# Edit the `styles` table entries below to change how your pasted content
+# looks. Styles use standard CSS in inline `style="..."` attributes.
+cat > "$tmp_lua" <<'LUA'
+-- Fonts are inlined via `font-family: "Yahoo Sans Normal", Arial, ...`.
+-- Google Docs falls through the stack if the first isn't installed; having
+-- sensible fallbacks means the paste still looks reasonable on any machine.
+local body_font = '"Yahoo Sans", Arial, Helvetica, sans-serif'
+local mono_font = '"Roboto Mono", Menlo, Consolas, monospace'
+
+local styles = {
+    h1          = 'font-family: ' .. body_font .. '; font-size: 20pt; font-weight: 700; color: #1a1a1a; margin: 0.6em 0 0.3em 0;',
+    h2          = 'font-family: ' .. body_font .. '; font-size: 16pt; font-weight: 700; color: #1a1a1a; margin: 0.5em 0 0.25em 0;',
+    h3          = 'font-family: ' .. body_font .. '; font-size: 13pt; font-weight: 700; color: #333;    margin: 0.4em 0 0.2em 0;',
+    body        = 'font-family: ' .. body_font .. ';',
+    inline_code = 'font-family: ' .. mono_font .. '; background: #f3f3f3; padding: 1px 5px; border-radius: 3px; font-size: 10.5pt;',
+    code_block  = 'font-family: ' .. mono_font .. '; background: #f7f7f7; padding: 10px 12px; border-radius: 4px; font-size: 10.5pt; white-space: pre; display: block;',
+    blockquote  = 'font-family: ' .. body_font .. '; border-left: 3px solid #ccc; padding: 4px 12px; color: #555; font-style: italic; margin: 0.5em 0;',
+    link        = 'color: #1a73e8; text-decoration: underline;',
+}
+
+-- Pandoc elements already carry an `attributes` table; we just add `style`.
+function Header(el)
+    local s = styles["h" .. el.level]
+    if s then el.attributes.style = s end
+    return el
+end
+
+function Code(el) -- inline code
+    el.attributes.style = styles.inline_code
+    return el
+end
+
+function CodeBlock(el)
+    el.attributes.style = styles.code_block
+    return el
+end
+
+function BlockQuote(el)
+    return pandoc.Div(el.content, pandoc.Attr("", {}, { style = styles.blockquote }))
+end
+
+function Link(el)
+    el.attributes.style = styles.link
+    return el
+end
+
+-- Paragraphs / plain text: pandoc AST's Para doesn't take attributes
+-- directly, so wrap contents in a styled Span. Google Docs preserves the
+-- span's font-family attribute on paste, which gives us Yahoo Sans body
+-- text (instead of Docs' default Arial/Calibri).
+function Para(el)
+    el.content = { pandoc.Span(el.content, pandoc.Attr("", {}, { style = styles.body })) }
+    return el
+end
+
+-- Same trick for list items that contain bare inlines (tight lists).
+function Plain(el)
+    el.content = { pandoc.Span(el.content, pandoc.Attr("", {}, { style = styles.body })) }
+    return el
+end
+LUA
+
+# HTML flavour.
+#
+# Pandoc adds class="kw"/"st"/"co"/... to tokens inside highlighted code
+# blocks, but emits no stylesheet (skipping --standalone keeps the output
+# paste-friendly). Docs strips unknown classes, so we post-process the
+# HTML to turn each class into an inline `style="color:..."` attribute.
+#
+# Colors come straight from pandoc's chosen highlight style -- no
+# hand-maintained palette. Override via:
+#
+#     HIGHLIGHT_STYLE=breezedark md-to-clipboard < notes.md
+#
+# Available: pandoc --list-highlight-styles
+HIGHLIGHT_STYLE="${HIGHLIGHT_STYLE:-pygments}"
+
+cat > "$tmp_py" <<'PYEOF'
+#!/usr/bin/env python3
+"""Walk pandoc's HTML output; for every <span class="xx"> that corresponds
+to a pandoc syntax-highlight token type, add an inline style attribute
+drawn from `pandoc --print-highlight-style=$HIGHLIGHT_STYLE`."""
+
+import json, os, re, subprocess, sys
+
+# Pandoc token-type name -> CSS class used in output HTML.
+CLASS_MAP = {
+    "Alert":"al", "Annotation":"an", "Attribute":"at", "BaseN":"bn",
+    "BuiltIn":"bu", "Char":"ch", "Comment":"co", "CommentVar":"cv",
+    "Constant":"cn", "ControlFlow":"cf", "DataType":"dt",
+    "DecVal":"dv", "Documentation":"do", "Error":"er",
+    "Float":"fl", "Function":"fu", "Import":"im", "Information":"in",
+    "Keyword":"kw", "Operator":"op", "Other":"ot",
+    "Preprocessor":"pp", "SpecialChar":"sc", "SpecialString":"ss",
+    "String":"st", "Variable":"va", "VerbatimString":"vs",
+    "Warning":"wa",
+}
+
+style = json.loads(subprocess.check_output(
+    ["pandoc", "--print-highlight-style", os.environ["HIGHLIGHT_STYLE"]]
+))
+
+def css_for(tok):
+    parts = []
+    if tok.get("text-color"):       parts.append(f"color:{tok['text-color']}")
+    if tok.get("background-color"): parts.append(f"background:{tok['background-color']}")
+    if tok.get("bold"):             parts.append("font-weight:bold")
+    if tok.get("italic"):           parts.append("font-style:italic")
+    return ";".join(parts)
+
+html = sys.stdin.read()
+for name, v in style.get("text-styles", {}).items():
+    cls = CLASS_MAP.get(name)
+    css = css_for(v) if cls else ""
+    if not (cls and css): continue
+    html = re.sub(
+        rf'class="{cls}"',
+        rf'class="{cls}" style="{css}"',
+        html,
+    )
+sys.stdout.write(html)
+PYEOF
+
+{
+    printf '<meta charset="utf-8">'
+    pandoc -f markdown -t html --lua-filter="$tmp_lua" < "$tmp_md" \
+        | HIGHLIGHT_STYLE="$HIGHLIGHT_STYLE" python3 "$tmp_py"
+} > "$tmp_html"
+
+# RTF flavour (for Google Docs in Firefox; its Firefox paste handler
+# ignores HTML but accepts RTF).
+pandoc -s -f markdown -t rtf < "$tmp_md" > "$tmp_rtf"
+
+# Write three pasteboard flavours at once via Swift / NSPasteboard.
+MD_PATH="$tmp_md" HTML_PATH="$tmp_html" RTF_PATH="$tmp_rtf" /usr/bin/swift - <<'SWIFT'
+import AppKit
+
+func readFile(_ envKey: String) -> String {
+    guard let p = ProcessInfo.processInfo.environment[envKey] else { return "" }
+    return (try? String(contentsOfFile: p, encoding: .utf8)) ?? ""
+}
+
+let md   = readFile("MD_PATH")
+let html = readFile("HTML_PATH")
+let rtf  = readFile("RTF_PATH")
+
+let pb = NSPasteboard.general
+pb.clearContents()
+pb.setString(md,   forType: .string)
+pb.setString(html, forType: .html)
+if !rtf.isEmpty {
+    pb.setString(rtf, forType: .rtf)
+}
+SWIFT
