@@ -64,16 +64,39 @@ done
 
 echo ""
 echo "=== Alfred workflows ==="
+# Alfred does not follow a symlinked workflow *directory* -- it scans for real
+# dirs and silently ignores links, so the workflow never appears. It is fine
+# with symlinked files inside a real dir, though. So: create the directory,
+# copy info.plist (Alfred rewrites it when you edit the workflow in the GUI),
+# and symlink the scripts and data so the repo stays the editable source.
 ALFRED_WF="$HOME/Library/Application Support/Alfred/Alfred.alfredpreferences/workflows"
 if [[ -d "$ALFRED_WF" ]]; then
     for wf in "$CUR_DIR"/alfred-workflows/*/; do
         [[ -d "$wf" ]] || continue
         name="$(basename "$wf")"
-        # Alfred expects each workflow in a dir starting with `user.workflow.<UUID>`.
-        # We pick a deterministic UUID-ish name derived from the workflow's basename
-        # so re-running this script is idempotent.
-        dst_name="user.workflow.dotfiles.$name"
-        link "${wf%/}" "$ALFRED_WF/$dst_name"
+        # Deterministic name so re-running is idempotent.
+        dst="$ALFRED_WF/user.workflow.dotfiles.$name"
+
+        if [[ -L "$dst" ]]; then
+            echo "  replacing stale symlink: $name"
+            rm "$dst"
+        fi
+        mkdir -p "$dst"
+
+        for f in "${wf%/}"/*; do
+            base="$(basename "$f")"
+            if [[ "$base" == "info.plist" ]]; then
+                # Only seed it; never clobber GUI edits.
+                if [[ ! -e "$dst/$base" ]]; then
+                    cp "$f" "$dst/$base"
+                    echo "  seeded            $name/$base"
+                else
+                    echo "  ok                $name/$base"
+                fi
+            else
+                link "$f" "$dst/$base"
+            fi
+        done
     done
 else
     echo "  skip (Alfred not installed or preferences not initialised)"
