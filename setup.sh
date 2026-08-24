@@ -115,4 +115,14 @@ else
 fi
 
 echo ""
+echo "=== app icons ==="
+if command -v fileicon >/dev/null 2>&1 && [[ -d /Applications/Alacritty.app ]]; then
+    fileicon set /Applications/Alacritty.app "$CUR_DIR/icons/alacritty_scanlines.png" -q
+    killall Dock
+    echo "  set               Alacritty icon"
+else
+    echo "  skip (fileicon or Alacritty.app missing)"
+fi
+
+echo ""
 echo "done."
