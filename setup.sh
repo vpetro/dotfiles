@@ -23,7 +23,7 @@ TOP_LEVEL=(
 )
 
 # Curated ~/.config subdirs (anything else in ~/.config stays local & untracked).
-CONFIG_SUBDIRS=(alacritty gh ghostty karabiner)
+CONFIG_SUBDIRS=(alacritty gh ghostty karabiner mise)
 
 link() {
     local src="$1" dst="$2"
