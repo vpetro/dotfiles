@@ -116,12 +116,22 @@ fi
 
 echo ""
 echo "=== app icons ==="
-if command -v fileicon >/dev/null 2>&1 && [[ -d /Applications/Alacritty.app ]]; then
-    fileicon set /Applications/Alacritty.app "$CUR_DIR/icons/alacritty_scanlines.png" -q
+if [[ -d /Applications/Alacritty.app ]]; then
+    tmp="$(mktemp -d)"
+    iconset="$tmp/alacritty.iconset"
+    mkdir -p "$iconset"
+    for size in 16 32 128 256 512; do
+        sips -z "$size" "$size" "$CUR_DIR/icons/alacritty_scanlines.png" --out "$iconset/icon_${size}x${size}.png" >/dev/null
+        sips -z "$((size * 2))" "$((size * 2))" "$CUR_DIR/icons/alacritty_scanlines.png" --out "$iconset/icon_${size}x${size}@2x.png" >/dev/null
+    done
+    iconutil -c icns "$iconset" -o /Applications/Alacritty.app/Contents/Resources/alacritty.icns
+    codesign --force -s - /Applications/Alacritty.app 2>/dev/null
+    rm -rf "$tmp"
+    touch /Applications/Alacritty.app
     killall Dock
-    echo "  set               Alacritty icon"
+    echo "  set               Alacritty icon (relaunch Alacritty to update the running app)"
 else
-    echo "  skip (fileicon or Alacritty.app missing)"
+    echo "  skip (Alacritty.app missing)"
 fi
 
 echo ""
