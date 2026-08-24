@@ -95,7 +95,7 @@
 [includeIf "gitdir:~/code/petro/**"]
   path = ~/.gitconfig-petro
 [gpg]
-	program = /usr/local/MacGPG2/bin/gpg2
+	program = /opt/homebrew/bin/gpg
 [credential "https://github.com"]
 	helper = 
 	helper = !/opt/homebrew/bin/gh auth git-credential
