@@ -29,6 +29,9 @@ defaults write com.apple.frameworks.diskimages skip-verify -bool true
 defaults write com.apple.frameworks.diskimages skip-verify-locked -bool true
 defaults write com.apple.frameworks.diskimages skip-verify-remote -bool true
 
+-- disable dock always show/autohide shortcut
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 52 '{enabled = 0;}'
+
 chflags nohidden ~/Library
 
 if defaults write com.apple.Safari FDAProbe -bool true 2>/dev/null; then
@@ -53,3 +56,5 @@ fi
 killall Finder
 
 echo "Done. Note that some of these changes require a logout/restart to take effect."
+
+
