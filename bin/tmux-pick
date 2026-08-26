@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+self="$HOME/bin/tmux-pick"
+
+list() {
+	tmux list-windows -a -F '#{session_name}	#{window_index}	#{window_name}	#{window_bell_flag}' |
+		awk -v only="${1:-0}" -v cur="$(tmux display-message -p '#{session_name}:#{window_index}')" '
+		BEGIN { FS = "\t" }
+		{
+			if (!($1 in seen)) { seen[$1] = 1; order[++n] = $1 }
+			c = ++count[$1]
+			idx[$1, c] = $2; name[$1, c] = $3; bell[$1, c] = $4
+			if ($4 == 1) flagged[$1] = 1
+			if (length($3) > w) w = length($3)
+		}
+		END {
+			for (i = 1; i <= n; i++) if (flagged[order[i]]) session(order[i])
+			for (i = 1; i <= n; i++) if (!flagged[order[i]]) session(order[i])
+		}
+		function session(s,  j, c, kept, k, br, mark, x) {
+			c = count[s]; kept = 0
+			for (j = 1; j <= c; j++)
+				if (s ":" idx[s, j] != cur && (only == 0 || bell[s, j] == 1)) keep[++kept] = j
+			if (kept > 0) {
+				printf "%s\t\033[1m%s\033[0m\n", s, s
+				for (k = 1; k <= kept; k++) {
+					j = keep[k]
+					br = (k == kept) ? "└─" : "├─"
+					mark = (bell[s, j] == 1) ? "\033[1;33m●\033[0m" : " "
+					printf "%s:%s\t\033[2m%s\033[0m %s %-" w "s  \033[2m%s:%s\033[0m\n", \
+						s, idx[s, j], br, mark, name[s, j], s, idx[s, j]
+				}
+			}
+			for (x in keep) delete keep[x]
+		}
+		'
+}
+
+if [ "${1:-}" = "--list" ]; then
+	if [ "${2:-}" = "--attention" ]; then list 1; else list; fi
+	exit 0
+fi
+
+choice=$(list | fzf --reverse --ansi --delimiter '\t' --with-nth 2 --prompt '> ' \
+	--preview 'tmux capture-pane -ep -t {1}' --preview-window 'right,55%' \
+	--bind "tab:transform:[[ \$FZF_PROMPT == '> ' ]] \
+		&& echo 'change-prompt(● )+reload($self --list --attention)' \
+		|| echo 'change-prompt(> )+reload($self --list)'") || exit 0
+tmux switch-client -t "=${choice%%$'\t'*}"
