@@ -63,6 +63,24 @@ for f in "$CUR_DIR"/bin/*; do
 done
 
 echo ""
+echo "=== Firefox profiles ==="
+# Firefox reads user.js at startup and copies it over prefs.js, so a symlink
+# into each profile is enough -- Firefox never rewrites user.js itself.
+FF_PROFILES="$HOME/Library/Application Support/Firefox/Profiles"
+if [[ -d "$FF_PROFILES" ]]; then
+    for prof in "$FF_PROFILES"/*/; do
+        [[ -d "$prof" ]] || continue
+        link "$CUR_DIR/firefox/user.js" "${prof}user.js"
+        if [[ -f "$CUR_DIR/firefox/userChrome.css" ]]; then
+            mkdir -p "${prof}chrome"
+            link "$CUR_DIR/firefox/userChrome.css" "${prof}chrome/userChrome.css"
+        fi
+    done
+else
+    echo "  skip (Firefox not installed or no profiles yet)"
+fi
+
+echo ""
 echo "=== Alfred workflows ==="
 # Alfred does not follow a symlinked workflow *directory* -- it scans for real
 # dirs and silently ignores links, so the workflow never appears. It is fine

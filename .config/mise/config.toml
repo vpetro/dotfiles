@@ -1,3 +1,4 @@
 [tools]
-node = "22.22.3"
-"npm:@earendil-works/pi-coding-agent" = "0.84.3"
+node = "26.8.1"
+"npm:@earendil-works/pi-coding-agent" = "latest"
+"npm:typescript" = "latest"

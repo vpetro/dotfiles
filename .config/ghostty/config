@@ -1,18 +1,14 @@
 # Font
 
-# font-family = Comic Code
-# font-style = Medium
-# font-style-bold = Medium
-# font-style-italic = Medium
-# font-size = 12
-# adjust-cell-height = 3 
-# adjust-cell-width = 0
-
-font-family = JetBrainsMono Nerd Font
-font-style = Light
-font-style-bold = Light
-font-style-italic = Light
+font-family = VictorMono Nerd Font
+font-style = Regular
+font-style-bold = Regular
+font-style-italic = Regular
 font-size = 14
+adjust-cell-height = 3 
+adjust-cell-width = 0
+font-thicken = true
+font-thicken-strength = 2
 
 # font-family = Essential PragmataPro
 # font-style = Regular

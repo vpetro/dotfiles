@@ -56,3 +56,10 @@ alias lsusb="ioreg -p IOUSB -w0 | sed 's/[^o]*o //; s/@.*$//' | grep -v '^Root.*
 alias tma="tmux attach -t"
 alias tmc="tmux new-session -s"
 alias tm="tmux"
+
+unalias pv 2>/dev/null
+pv() {
+    local dir
+    dir=$(pr-pick | jq -er ".worktree") || return
+    cd "$dir" && nvim -c 'DiffviewOpen origin/main...HEAD -- . :(exclude,glob)**/*.test* :(exclude,glob)**/vitest*' .
+}

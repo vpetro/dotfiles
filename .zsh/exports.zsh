@@ -19,6 +19,8 @@ export HOMEBREW_CASK_OPTS="--no-quarantine"
 
 # GKE auth helper required for kubectl against GKE clusters
 export USE_GKE_GCLOUD_AUTH_PLUGIN=True
+export CLOUDSDK_PYTHON="$HOME/.local/share/gcloud-python/bin/python"
+export CLOUDSDK_PYTHON_SITEPACKAGES=1
 
 # uv: use subprocess keyring provider (works with private package indexes)
 export UV_KEYRING_PROVIDER=subprocess

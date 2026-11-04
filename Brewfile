@@ -1,7 +1,6 @@
 tap "encoredev/tap"
 tap "gleanwork/tap"
 tap "hashicorp/tap"
-tap "homebrew/yahoo", "git@git.ouryahoo.com:homebrew/yahoo.git", trusted: true
 tap "pulumi/tap"
 # Static analysis and lint tool, for (ba)sh scripts
 brew "shellcheck"
@@ -107,26 +106,6 @@ brew "yt-dlp"
 brew "zsh-vi-mode"
 # The static analysis-powered Go framework for building backend applications
 brew "encoredev/tap/encore", trusted: true
-# Installs athenz-user-cert
-brew "homebrew/yahoo/athenz-user-cert"
-# Installs ckms-remotecli
-brew "homebrew/yahoo/ckms-remotecli"
-# Installs gcpfed
-brew "homebrew/yahoo/gcpfed"
-# Installs gscp
-brew "homebrew/yahoo/gscp"
-# Installs gssh
-brew "homebrew/yahoo/gssh"
-# Installs yahoo_certificate_bundle
-brew "homebrew/yahoo/yahoo_certificate_bundle"
-# Installs zms-cli
-brew "homebrew/yahoo/zms-cli"
-# Installs zts-accesstoken
-brew "homebrew/yahoo/zts-accesstoken"
-# Installs zts-idtoken
-brew "homebrew/yahoo/zts-idtoken"
-# Installs zts-rolecert
-brew "homebrew/yahoo/zts-rolecert"
 # Password manager that keeps all passwords secure behind one password
 cask "1password"
 # GPU-accelerated terminal emulator
