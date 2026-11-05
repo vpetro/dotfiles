@@ -128,9 +128,9 @@ echo "--- dry run makes no changes ---"
 scenario dry
 run_script --dry-run
 assert_eq "dry run exits 0" "$STATUS" 0
-assert_file_contains "dry run announces itself" "$OUT" "dry run: nothing was changed"
-assert_file_contains "dry run shows the planned dock pins" "$OUT" "pin               $APPS/Google Chrome.app"
-assert_file_contains "dry run shows a planned command" "$OUT" "would run         defaults write com.apple.dock orientation -string left"
+assert_file_contains "dry run announces itself" "$OUT" "Dry run complete. No settings were changed."
+assert_file_contains "dry run shows the planned dock pins" "$OUT" "Dock item: $APPS/Google Chrome.app"
+assert_file_contains "dry run shows a planned command" "$OUT" "Would run: defaults write com.apple.dock orientation -string left"
 assert_eq "dry run runs no commands" "$(wc -l < "$FAKE_LOG" | tr -d ' ')" 0
 assert_eq "dry run writes nothing" "$(find "$FAKE_STORE" -type f | wc -l | tr -d ' ')" 0
 
@@ -153,7 +153,7 @@ assert_file_contains "finder restarted" "$FAKE_LOG" "killall Finder"
 assert_file_contains "startup chime muted via sudo" "$FAKE_LOG" "sudo nvram StartupMute=%01"
 assert_file_contains "library unhidden in fake home" "$FAKE_LOG" "chflags nohidden $(printf '%q' "$FAKE_HOME/Library")"
 assert_file_contains "wallpaper path passed intact to osascript" "$FAKE_LOG" "osascript -e on\\ run\\ argv -e tell\\ application\\ \\\"System\\ Events\\\"\\ to\\ tell\\ every\\ desktop\\ to\\ set\\ picture\\ to\\ \\(item\\ 1\\ of\\ argv\\) -e end\\ run $(printf '%q' "$FAKE_HOME/Pictures/Wallpapers/vladstudio_cantsleep_1600x1200_signed.jpg")"
-assert_file_contains "checksum mismatch is reported" "$OUT" "sha256 differs from the recorded image"
+assert_file_contains "checksum mismatch is reported" "$OUT" "Wallpaper checksum differs from the saved image."
 assert_file_contains "hotkey 52 disabled with its key combo kept" "$FAKE_STORE/com.apple.symbolichotkeys/AppleSymbolicHotKeys" "<key>enabled</key><false/><key>value</key>"
 assert_eq "currentHost tap behavior written" "$(tr '\n' ' ' < "$FAKE_STORE/currentHost.NSGlobalDomain/com.apple.mouse.tapBehavior")" "-int 2 "
 assert_file_contains "safari written with full disk access" "$FAKE_STORE/com.apple.Safari/HomePage" "about:blank"
@@ -173,7 +173,7 @@ scenario missing_app
 rmdir "$APPS/Slack.app"
 run_script
 assert_eq "missing app exits 0" "$STATUS" 0
-assert_file_contains "missing app reported" "$OUT" "missing, skipped  Slack.app"
+assert_file_contains "missing app reported" "$OUT" "Skipped missing Dock item: Slack.app"
 assert_eq "two apps pinned in order" "$(labels_of "$FAKE_STORE/com.apple.dock/persistent-apps")" "Google Chrome,Firefox Nightly,"
 mkdir "$APPS/Slack.app"
 
@@ -195,7 +195,7 @@ echo "--- missing wallpaper is skipped ---"
 scenario missing_image
 run_script --wallpaper "$TMP/nope.jpg"
 assert_eq "missing image exits 0" "$STATUS" 0
-assert_file_contains "missing image reported" "$OUT" "skip (no image)   $TMP/nope.jpg"
+assert_file_contains "missing image reported" "$OUT" "Wallpaper not found: $TMP/nope.jpg"
 assert_file_lacks "osascript not called without an image" "$FAKE_LOG" "osascript"
 
 echo "--- wallpaper override and relative path ---"
@@ -206,7 +206,7 @@ head -c 100 /dev/urandom > "$TMP/alt dir/pic one.jpg"
 STATUS=$?
 OUT="$TMP/out.txt"
 assert_eq "override exits 0" "$STATUS" 0
-assert_file_contains "override reports the image" "$OUT" "image             $TMP/alt dir/pic one.jpg"
+assert_file_contains "override reports the image" "$OUT" "Wallpaper checksum differs from the saved image. ($TMP/alt dir/pic one.jpg)"
 assert_file_contains "relative path resolved to absolute" "$FAKE_LOG" "$(printf '%q' "$TMP/alt dir/pic one.jpg")"
 scenario env_override
 head -c 100 /dev/urandom > "$TMP/env.jpg"
@@ -219,7 +219,7 @@ if [[ -f "$PRESERVED" ]]; then
     echo "--- preserved image matches the recorded checksum ---"
     scenario preserved
     run_script --wallpaper "$PRESERVED"
-    assert_file_contains "checksum match reported" "$OUT" "sha256 matches"
+    assert_file_contains "checksum match reported" "$OUT" "Wallpaper checksum matches the saved image. ($PRESERVED)"
 else
     echo "--- (skipped: preserved image not present at $PRESERVED) ---"
 fi
@@ -228,8 +228,8 @@ echo "--- wallpaper failure is reported and the run continues ---"
 scenario osa_fail
 FAKE_OSASCRIPT_FAIL=1 run_script
 assert_eq "failure exits 1" "$STATUS" 1
-assert_file_contains "failure printed" "$OUT" "FAILED            osascript"
-assert_file_contains "failure count printed" "$OUT" "done with 1 failed command(s)"
+assert_file_contains "failure printed" "$OUT" "Command failed: osascript"
+assert_file_contains "failure count printed" "$OUT" "Setup finished with 1 failed command."
 assert_file_contains "later steps still ran" "$FAKE_LOG" "killall Finder"
 assert_file_contains "safari still applied after the failure" "$FAKE_STORE/com.apple.Safari/HomePage" "about:blank"
 
@@ -238,7 +238,7 @@ scenario no_fda
 chmod 000 "$TCC_DB"
 run_script
 assert_eq "no fda exits 0" "$STATUS" 0
-assert_eq "two protected sections skipped" "$(grep -c 'skip (no Full Disk Access' "$OUT")" 2
+assert_eq "two protected sections skipped" "$(grep -c 'Protected settings skipped' "$OUT")" 2
 assert_missing "safari not written without fda" "$FAKE_STORE/com.apple.Safari"
 assert_missing "universalaccess not written without fda" "$FAKE_STORE/com.apple.universalaccess"
 assert_file_contains "unprotected domains still written" "$FAKE_STORE/com.apple.finder/ShowPathbar" "true"

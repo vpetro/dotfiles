@@ -44,13 +44,13 @@ done
 
 run() {
     if [[ $DRY_RUN -eq 1 ]]; then
-        printf '  would run        '
+        printf '  Would run:'
         printf ' %q' "$@"
         printf '\n'
         return 0
     fi
     if ! "$@"; then
-        printf '  FAILED           '
+        printf '  Command failed:'
         printf ' %q' "$@"
         printf '\n'
         FAILED=$((FAILED + 1))
@@ -165,17 +165,17 @@ dock() {
 
     for rel in "${DOCK_APPS[@]}"; do
         if path="$(find_app "$rel")"; then
-            echo "  pin               $path"
+            echo "  Dock item: $path"
             tiles+=("$(app_tile "$path")")
         else
-            echo "  missing, skipped  $rel (searched: ${APP_DIRS[*]})"
+            echo "  Skipped missing Dock item: $rel (searched: ${APP_DIRS[*]})"
         fi
     done
     if [[ -d "$DOCK_FOLDER" ]]; then
-        echo "  pin               $DOCK_FOLDER (stack, fan, by date added)"
+        echo "  Dock item: $DOCK_FOLDER (stack, fan, by date added)"
         others+=("$(folder_tile "$DOCK_FOLDER" 2 0 1)")
     else
-        echo "  missing, skipped  $DOCK_FOLDER"
+        echo "  Skipped missing Dock item: $DOCK_FOLDER"
     fi
 
     run defaults write com.apple.dock persistent-apps -array ${tiles[@]+"${tiles[@]}"}
@@ -219,16 +219,16 @@ trackpad() {
 
 wallpaper() {
     if [[ ! -f "$WALLPAPER" ]]; then
-        echo "  skip (no image)   $WALLPAPER"
+        echo "  Wallpaper not found: $WALLPAPER"
         return
     fi
     WALLPAPER="$(cd "$(dirname "$WALLPAPER")" && pwd)/$(basename "$WALLPAPER")"
     local sum
     sum="$(shasum -a 256 "$WALLPAPER" | cut -d' ' -f1)"
     if [[ "$sum" == "$WALLPAPER_SHA256" ]]; then
-        echo "  image             $WALLPAPER (sha256 matches)"
+        echo "  Wallpaper checksum matches the saved image. ($WALLPAPER)"
     else
-        echo "  image             $WALLPAPER (sha256 differs from the recorded image)"
+        echo "  Wallpaper checksum differs from the saved image. ($WALLPAPER)"
     fi
     run osascript \
         -e 'on run argv' \
@@ -238,7 +238,7 @@ wallpaper() {
 }
 
 no_full_disk_access() {
-    echo "  skip (no Full Disk Access: grant it to this terminal in System Settings > Privacy & Security > Full Disk Access, then re-run)"
+    echo "  Protected settings skipped: access could not be confirmed. Check this terminal in System Settings > Privacy & Security > Full Disk Access, then run the setup again."
 }
 
 safari() {
@@ -272,7 +272,7 @@ section() {
 }
 
 if [[ $DRY_RUN -eq 1 ]]; then
-    echo "dry run: nothing will be changed"
+    echo "Dry run: settings will not be changed."
 fi
 
 section "startup sound"; startup_sound
@@ -288,12 +288,16 @@ section "accessibility"; accessibility
 
 echo ""
 if [[ $DRY_RUN -eq 1 ]]; then
-    echo "dry run: nothing was changed"
+    echo "Dry run complete. No settings were changed."
     exit 0
 fi
 run killall Finder
-if [[ $FAILED -gt 0 ]]; then
-    echo "done with $FAILED failed command(s)"
+if [[ $FAILED -eq 1 ]]; then
+    echo "Setup finished with 1 failed command."
     exit 1
 fi
-echo "Done. Note that some of these changes require a logout/restart to take effect."
+if [[ $FAILED -gt 1 ]]; then
+    echo "Setup finished with $FAILED failed commands."
+    exit 1
+fi
+echo "Setup finished. Some settings require a logout or restart."
